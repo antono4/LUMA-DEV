@@ -377,7 +377,7 @@
                 ]
             },
             opinion: {
-                patterns: ['menurutmu', 'opini', 'opinion', 'think', 'what do you think', 'better', 'lebih baik', 'sebaiknya', 'should', 'must','],
+                patterns: ['menurutmu', 'opini', 'opinion', 'think', 'what do you think', 'better', 'lebih baik', 'sebaiknya', 'should', 'must'],
                 responses: [
                     "Berdasarkan analisis saya, berikut pendapat saya: 💭\n\n[Sebagai AI, saya memberikan rekomendasi berdasarkan data, best practices, dan konsensus komunitas developer.]\n\nUntuk memberikan opini yang lebih akurat, saya perlu tahu:\n\n• Konteks penggunaan Anda (personal/project/startup/enterprise)?\n• Prioritas utama (kecepatan development/performa/skalabilitas/harga)?\n• Tim dan sumber daya yang tersedia?\n\nDengan konteks ini, saya bisa memberikan rekomendasi yang lebih sesuai dengan kebutuhan spesifik Anda.",
                     "Pertanyaan bagus tentang opinion! ⚖️ Saya akan berbagi perspektif:\n\n📊 **Faktor yang perlu dipertimbangkan:**\n• Use case spesifik Anda\n• Budget dan timeline\n• Skillset tim\n• Requirements jangka panjang\n\n💡 **Rekomendasi umum**:\n• Untuk prototyping cepat: Gunakan tools yang familiar\n• Untuk production: Prioritaskan scalability dan maintainability\n• Untuk learning: Fokus pada fundamental concepts\n\nNamun setiap situasi unik! Ceritakan lebih detail kondisi Anda agar saya bisa memberikan saran yang lebih personal dan actionable."
@@ -418,13 +418,13 @@
             litellm: {
                 patterns: ['litellm', 'lite llm', 'litellm proxy', 'unified api'],
                 responses: [
-                    "LiteLLM adalah library Python yang powerful! 🔥 Ini memungkinkan Anda mengakses 100+ LLM dengan format API yang konsisten.\n\n🚀 **Supported Providers**:\n• OpenAI (GPT-4, GPT-3.5)\n• Anthropic (Claude 3)\n• Azure OpenAI\n• Google Vertex AI (Gemini)\n• AWS Bedrock\n• **MiniMax** 🇨🇳\n• Cohere, Hugging Face\n• And 100+ more!\n\n💡 **Keunggulan LiteLLM**:\n```python\nfrom litellm import completion\n\n# OpenAI\nresponse = completion(model='gpt-4', messages=[...])\n\n# Claude\nresponse = completion(model='claude-3-opus', messages=[...])\n\n# MiniMax\nresponse = completion(model='minimax-01', messages=[...])\n```\n\n📦 **Install**: `pip install litellm`\n\nAda yang ingin Anda ketahui lebih lanjut tentang LiteLLM?"
+                    "LiteLLM adalah library Python yang powerful! 🔥 Ini memungkinkan Anda mengakses 100+ LLM dengan format API yang konsisten.\n\n🚀 **Supported Providers**:\n• OpenAI (GPT-4, GPT-3.5)\n• Anthropic (Claude 3)\n• Azure OpenAI\n• Google Vertex AI (Gemini)\n• AWS Bedrock\n• **MiniMax** 🇨🇳\n• Cohere, Hugging Face\n• And 100+ more!\n\n💡 **Keunggulan LiteLLM**:\n⟨code⟩python\nfrom litellm import completion\n\n# OpenAI\nresponse = completion(model='gpt-4', messages=[...])\n\n# Claude\nresponse = completion(model='claude-3-opus', messages=[...])\n\n# MiniMax\nresponse = completion(model='minimax-01', messages=[...])\n⟨code⟩\n\n📦 **Install**: pip install litellm\n\nAda yang ingin Anda ketahui lebih lanjut tentang LiteLLM?"
                 ]
             },
             minimax: {
                 patterns: ['minimax', 'minimax-01', 'minimax-m2', 'minimax-m2.7', 'abab'],
                 responses: [
-                    "MiniMax adalah perusahaan AI dari China! 🇨🇳\n\n🤖 **Model MiniMax**:\n• **MiniMax-01** - 456B parameters, MoE architecture\n• **Abab 6.5** - Model sebelumnya\n• **MiniMax Speech** - Text-to-Speech\n• **MiniMax Video** - AI video generation\n\n📊 **Spesifikasi MiniMax-01**:\n• 456 billion parameters\n• Mixture of Experts (MoE)\n• Supports 1M+ token context\n• Multi-modal capabilities\n• Cost-effective untuk enterprise\n\n🔗 **Integrasi via LiteLLM**:\n```python\nimport litellm\nresponse = litellm.completion(\n    model='minimax-01',\n    messages=[{'role': 'user', 'content': 'Hello!'}]\n)\n```\n\nMau tahu lebih lanjut?"
+                    "MiniMax adalah perusahaan AI dari China! 🇨🇳\n\n🤖 **Model MiniMax**:\n• **MiniMax-01** - 456B parameters, MoE architecture\n• **Abab 6.5** - Model sebelumnya\n• **MiniMax Speech** - Text-to-Speech\n• **MiniMax Video** - AI video generation\n\n📊 **Spesifikasi MiniMax-01**:\n• 456 billion parameters\n• Mixture of Experts (MoE)\n• Supports 1M+ token context\n• Multi-modal capabilities\n• Cost-effective untuk enterprise\n\n🔗 **Integrasi via LiteLLM**:\n⟨code⟩python\nimport litellm\nresponse = litellm.completion(\n    model='minimax-01',\n    messages=[{'role': 'user', 'content': 'Hello!'}]\n)\n⟨code⟩\n\nMau tahu lebih lanjut?"
                 ]
             },
             cloud: {
@@ -436,19 +436,19 @@
             devops: {
                 patterns: ['devops', 'ci/cd', 'jenkins', 'github actions', 'gitlab ci', 'deployment', 'automation', 'terraform'],
                 responses: [
-                    "DevOps adalah kunci deployment efisien! 🔄\n\n🛠️ **Tools Stack**:\n• **CI/CD**: GitHub Actions, GitLab CI, Jenkins\n• **Container**: Docker, Podman\n• **Orchestration**: Kubernetes, Swarm\n• **IaC**: Terraform, Pulumi, Ansible\n• **Monitoring**: Prometheus, Grafana, ELK\n\n📋 **GitHub Actions Example**:\n```yaml\nname: Deploy\non: [push]\njobs:\n  build:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - name: Build\n        run: docker build -t myapp .\n      - name: Deploy\n        run: kubectl apply -f deployment.yaml\n```\n\n✅ **Benefits**: Faster delivery, improved reliability, automated testing\n\nAda pertanyaan DevOps?"
+                    "DevOps adalah kunci deployment efisien! 🔄\n\n🛠️ **Tools Stack**:\n• **CI/CD**: GitHub Actions, GitLab CI, Jenkins\n• **Container**: Docker, Podman\n• **Orchestration**: Kubernetes, Swarm\n• **IaC**: Terraform, Pulumi, Ansible\n• **Monitoring**: Prometheus, Grafana, ELK\n\n📋 **GitHub Actions Example**:\n⟨code⟩yaml\nname: Deploy\non: [push]\njobs:\n  build:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - name: Build\n        run: docker build -t myapp .\n      - name: Deploy\n        run: kubectl apply -f deployment.yaml\n⟨code⟩\n\n✅ **Benefits**: Faster delivery, improved reliability, automated testing\n\nAda pertanyaan DevOps?"
                 ]
             },
             datascience: {
                 patterns: ['data science', 'data analysis', 'pandas', 'numpy', 'jupyter', 'visualization', 'tensorflow', 'pytorch'],
                 responses: [
-                    "Data Science adalah kombinasi seni dan sains! 📊🔬\n\n📚 **Fundamental Skills**:\n• **Statistics**: Descriptive, inferential\n• **Programming**: Python, R, SQL\n• **Data Manipulation**: Pandas, NumPy\n• **Visualization**: Matplotlib, Plotly, Tableau\n• **ML**: Scikit-learn, TensorFlow, PyTorch\n\n📈 **Workflow**:\n1️⃣ Data Collection - SQL, APIs\n2️⃣ Data Cleaning - Handle missing values\n3️⃣ Exploratory Analysis\n4️⃣ Modeling\n5️⃣ Evaluation\n6️⃣ Deployment\n\n🐍 **Pandas Example**:\n```python\nimport pandas as pd\ndf = pd.read_csv('data.csv')\ndf.describe()\ndf.groupby('category').mean()\n```\n\nTopik Data Science apa yang ingin dibahas?"
+                    "Data Science adalah kombinasi seni dan sains! 📊🔬\n\n📚 **Fundamental Skills**:\n• **Statistics**: Descriptive, inferential\n• **Programming**: Python, R, SQL\n• **Data Manipulation**: Pandas, NumPy\n• **Visualization**: Matplotlib, Plotly, Tableau\n• **ML**: Scikit-learn, TensorFlow, PyTorch\n\n📈 **Workflow**:\n1️⃣ Data Collection - SQL, APIs\n2️⃣ Data Cleaning - Handle missing values\n3️⃣ Exploratory Analysis\n4️⃣ Modeling\n5️⃣ Evaluation\n6️⃣ Deployment\n\n🐍 **Pandas Example**:\n⟨code⟩python\nimport pandas as pd\ndf = pd.read_csv('data.csv')\ndf.describe()\ndf.groupby('category').mean()\n⟨code⟩\n\nTopik Data Science apa yang ingin dibahas?"
                 ]
             },
             cybersecurity: {
                 patterns: ['security', 'hack', 'cybersecurity', 'ssl', 'tls', 'encryption', 'oauth', 'jwt', 'firewall'],
                 responses: [
-                    "Cybersecurity sangat penting! 🔐\n\n🛡️ **Core Concepts**:\n• **CIA Triad**: Confidentiality, Integrity, Availability\n• **Authentication**: Passwords, 2FA, MFA\n• **Authorization**: RBAC, ABAC\n• **Encryption**: AES, RSA, hashing\n\n🔧 **OWASP Top 10**:\n• Injection\n• Broken Authentication\n• Sensitive Data Exposure\n• XSS, SQL Injection, CSRF\n\n🔐 **Best Practices**:\n```javascript\n// JWT securely\nconst token = jwt.sign(payload, secret, {\n  expiresIn: '1h',\n  algorithm: 'HS256'\n});\n```\n\n📋 **Tools**: Nessus, Metasploit, Wireshark, Burp Suite\n\nPertanyaan keamanan?"
+                    "Cybersecurity sangat penting! 🔐\n\n🛡️ **Core Concepts**:\n• **CIA Triad**: Confidentiality, Integrity, Availability\n• **Authentication**: Passwords, 2FA, MFA\n• **Authorization**: RBAC, ABAC\n• **Encryption**: AES, RSA, hashing\n\n🔧 **OWASP Top 10**:\n• Injection\n• Broken Authentication\n• Sensitive Data Exposure\n• XSS, SQL Injection, CSRF\n\n🔐 **Best Practices**:\n⟨code⟩javascript\n// JWT securely\nconst token = jwt.sign(payload, secret, {\n  expiresIn: '1h',\n  algorithm: 'HS256'\n});\n⟨code⟩\n\n📋 **Tools**: Nessus, Metasploit, Wireshark, Burp Suite\n\nPertanyaan keamanan?"
                 ]
             }
         };

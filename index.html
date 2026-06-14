@@ -301,19 +301,114 @@
         const chatMessages = document.getElementById('chatMessages');
         const chatInput = document.getElementById('chatInput');
         
-        // Standalone chatbot responses (no server needed)
-        const responses = [
-            "Halo! 👋 Apa kabar hari ini?",
-            "Saya AI Assistant. Ada yang bisa saya bantu?",
-            "Menarik! Ceritakan lebih lanjut.",
-            "Baik, saya pahami. Ada pertanyaan lain?",
-            "Saya siap membantu! Apa yang ingin Anda ketahui?",
-            "Terima kasih! Ada hal lain yang perlu dibicarakan?",
-            "Hmm, izinkan saya berpikir sebentar...",
-            "Berdasarkan informasi yang ada, saya sarankan untuk melanjutkan.",
-            "Bagus! Mari kita diskusikan lebih lanjut.",
-            "Saya di sini untuk membantu. Silakan tanyakan apa saja!"
-        ];
+        // Intelligent response system
+        const knowledgeBase = {
+            greeting: {
+                patterns: ['halo', 'hai', 'hi', 'assalam', 'pagi', 'siang', 'sore', 'malam', 'selamat'],
+                responses: [
+                    "Halo! 👋 Selamat datang! Senang bisa berbicara dengan Anda. Saya adalah asisten AI yang siap membantu Anda. Bisa ceritakan, ada yang sedang Anda pikirkan atau butuhkan hari ini?",
+                    "Hai! 😊 Selamat datang! Saya di sini untuk membantu Anda sebaik mungkin. Silakan tanyakan apa saja - mulai dari informasi umum, bantuan teknis, atau sekadar mengobrol.",
+                    "Assalamualaikum! 🙏 Saya AI Assistant, senang bertemu dengan Anda. Ada yang bisa saya bantu hari ini? Saya siap memberikan informasi yang Anda butuhkan."
+                ]
+            },
+            help: {
+                patterns: ['bantu', 'tolong', 'help', 'how', 'cara', 'tips', 'saran', 'rekomendasi'],
+                responses: [
+                    "Tentu, saya dengan senang hati membantu! 😊 Untuk memberikan jawaban yang lebih tepat, boleh ceritakan lebih detail tentang apa yang Anda butuhkan? Misalnya:\n\n• Jika butuh informasi: Tentang topik apa?\n• Jika butuh bantuan teknis: Apa yang sedang Anda kerjakan?\n• Jika butuh saran: Dalam situasi seperti apa?\n\nDengan informasi lebih lanjut, saya bisa memberikan jawaban yang lebih spesifik dan berguna untuk Anda.",
+                    "Saya siap membantu! 💪 Mohon berikan detail lebih lanjut agar saya bisa memberikan solusi terbaik untuk Anda. Semakin spesifik pertanyaan Anda, semakin tepat jawaban yang bisa saya berikan.",
+                    "Dengan senang hati! 🙌 Agar saya bisa membantu secara optimal, coba jelaskan:\n\n1. Apa tujuan utama Anda?\n2. Apakah ada kendala yang sedang dihadapi?\n3. Sudah mencoba solusi apa saja?\n\nDengan pemahaman yang lebih baik, saya akan memberikan jawaban yang lebih detail dan actionable."
+                ]
+            },
+            programming: {
+                patterns: ['code', 'coding', 'program', 'python', 'javascript', 'html', 'css', 'java', 'php', 'react', 'vue', 'angular', 'node', 'api', 'database', 'sql', 'git', 'github', 'deploy', 'server', 'website', 'web', 'app', 'mobile'],
+                responses: [
+                    "Mengenai programming dan development! 💻 Saya bisa membantu Anda dengan berbagai aspek:\n\n📌 **Bahasa Pemrograman**: Python, JavaScript, Java, PHP, C++, dan lainnya\n📌 **Framework**: React, Vue, Angular, Django, Flask, Next.js\n📌 **Database**: MySQL, PostgreSQL, MongoDB, Firebase\n📌 **Tools**: Git, GitHub, Docker, VS Code\n📌 **Deployment**: Vercel, Netlify, AWS, Heroku\n\nBisa ceritakan lebih spesifik project atau masalah yang sedang Anda hadapi? Saya akan dengan senang hati membantu menemukan solusinya!",
+                    "Topik programming yang menarik! 🚀 Berdasarkan pengalaman dan pengetahuan saya, saya bisa membantu Anda dengan:\n\n✅ **Debugging**: Mencari dan memperbaiki error dalam kode Anda\n✅ **Architecture**: Merancang struktur project yang baik\n✅ **Best Practices**: Menulis kode yang bersih dan efisien\n✅ **Optimization**: Meningkatkan performa aplikasi\n✅ **Documentation**: Membuat dokumentasi yang baik\n\nSilakan bagikan kode atau jelaskan masalah spesifik Anda, saya akan memberikan analisis dan solusi yang detail.",
+                    "Development adalah bidang yang sangat luas! 📚 Berikut beberapa area di mana saya bisa membantu:\n\n🔹 **Frontend**: HTML, CSS, JavaScript, responsive design\n🔹 **Backend**: API development, authentication, payment integration\n🔹 **Mobile**: React Native, Flutter, PWA\n🔹 **DevOps**: CI/CD, containerization, cloud deployment\n🔹 **Testing**: Unit testing, integration testing\n\nApa aspek tertentu yang ingin Anda eksplorasi atau ada masalah spesifik yang perlu dipecahkan?"
+                ]
+            },
+            ai: {
+                patterns: ['ai', 'chatbot', 'machine learning', 'deep learning', 'neural', 'gpt', 'openai', 'claude', 'anthropic', 'llm', 'prompt', 'nlp', 'chat gpt'],
+                responses: [
+                    "AI (Artificial Intelligence) adalah topik yang sangat menarik! 🤖 Saat ini, saya adalah contoh dari AI berbasis LLM (Large Language Model). Berikut pemahaman saya:\n\n📊 **Jenis-jenis AI**:\n• **Narrow AI**: AI yang fokus pada satu tugas spesifik\n• **General AI**: AI dengan kemampuan mirip manusia (belum ada)\n• **LLM (Large Language Model)**: Model bahasa besar seperti saya\n\n🔧 **Aplikasi AI populer**:\n• ChatGPT (OpenAI) - Generatif teks\n• Claude (Anthropic) - Analisis & percakapan\n• DALL-E / Midjourney - Generate gambar\n• Whisper - Speech recognition\n\n💡 **Tips menggunakan AI**:\n• Berikan konteks yang jelas\n• Pisahkan pertanyaan kompleks menjadi bagian kecil\n• Iterasi dan refine prompt Anda\n\nAda aspek AI tertentu yang ingin Anda eksplorasi lebih dalam?",
+                    "Teknologi AI terus berkembang pesat! 🚀 Beberapa hal penting yang perlu diketahui:\n\n📈 **Tren AI saat ini**:\n• Generative AI (membuat konten baru)\n• Multimodal AI (teks, gambar, suara)\n• AI Agents (自治AI yang bisa melakukan tugas autonomously)\n\n⚠️ **Pertimbangan etis**:\n• Bias dalam data training\n• Privasi dan keamanan data\n• Transparansi penggunaan AI\n• Dampak terhadap pekerjaan\n\n💼 **Penerapan AI di industri**:\n• Healthcare: Diagnosis, drug discovery\n• Finance: Fraud detection, trading\n• Education: Personalized learning\n• Customer Service: Chatbots, support automation\n\nTopik mana yang ingin Anda bahas lebih detail? Saya bisa memberikan penjelasan yang lebih mendalam sesuai kebutuhan Anda."
+                ]
+            },
+            explanation: {
+                patterns: ['apa itu', 'apa perbedaan', 'jelaskan', 'define', 'explain', 'pengertian', 'definisi', 'meaning', 'apa itu'],
+                responses: [
+                    "Pertanyaan yang bagus! 📚 Saya akan menjelaskan secara detail:\n\n[Karena saya adalah AI language model, saya bisa menjelaskan berbagai konsep, teori, teknologi, atau topik yang Anda minati.]\n\nSilakan sebutkan topik spesifik yang ingin Anda pahami lebih dalam. Saya akan memberikan:\n\n📖 Penjelasan konseptual\n📊 Contoh nyata/penggunaan\n⚡ Kelebihan dan kekurangan\n🔄 Perbandingan dengan alternatif\n📝 Sumber referensi untuk belajar lebih lanjut\n\nKlik topik di bawah atau ketik pertanyaan Anda secara spesifik!",
+                    "Baik, izinkan saya menjelaskan dengan detail! 🎯\n\nUntuk memberikan penjelasan yang komprehensif, saya membutuhkan informasi lebih lanjut:\n\n• Topik spesifik apa yang ingin Anda pahami?\n• Tingkat pemahaman Anda saat ini (pemula/menengah/mahir)?\n• Apakah Anda butuh contoh praktis atau teori murni?\n\nDengan informasi ini, saya bisa menyesuaikan penjelasan agar paling bermanfaat untuk Anda."
+                ]
+            },
+            problem: {
+                patterns: ['error', 'bug', 'gagal', 'masalah', 'issue', 'trouble', 'kesulitan', 'error', 'not working', 'tidak bisa', 'kenapa', 'why', 'how come'],
+                responses: [
+                    "Saya turut prihatin dengan masalah yang sedang Anda hadapi. 😟 Demi membantu lebih efektif, coba berikan detail berikut:\n\n🔍 **Informasi yang dibutuhkan:**\n1. Apa pesan error yang muncul?\n2. Kapan masalah ini pertama kali terjadi?\n3. Apa perubahan terakhir yang Anda lakukan?\n4. Sudah mencoba langkah apa saja?\n\n💡 **Langkah awal yang umum:**\n• Clear cache browser / restart IDE\n• Check console/log untuk detail error\n• Verify semua dependencies sudah terinstall\n• Pastikan konfigurasi sudah benar\n\nDengan informasi spesifik, saya bisa membantu menemukan solusi yang tepat!",
+                    "Masalah teknis memang bisa frustasi! 🔧 Saya akan bantu Anda menyelesaikan ini. Agar lebih efektif, coba identifikasi:\n\n📋 **Checklist troubleshooting:**\n□ Apa pesan error yang spesifik?\n□ Di mana error terjadi (browser, terminal, API)?\n□ Apakah ini第一次 terjadi atau sudah berulang?\n□ Apa steps untuk mereproduksi masalah?\n\n🔄 **Solusi umum yang bisa dicoba:**\n• Restart aplikasi/mesin\n• Clear dan rebuild dependencies\n• Check koneksi internet/API\n• Review recent changes di kode\n\nCeritakan detail masalah Anda, saya akan bantu breakdown dan cari solusinya!",
+                    "Setiap masalah pasti ada solusinya! 💪 Mari kita selesaikan bersama. Untuk mempercepat proses debugging, pertimbangkan:\n\n1️⃣ **Reproduce the issue**: Bisa Anda jelaskan steps untuk membuat masalah muncul kembali?\n\n2️⃣ **Check error details**: Apa exact error message yang muncul? Bisa salin di sini.\n\n3️⃣ **Environment info**: OS apa? Versi software yang digunakan?\n\n4️⃣ **Recent changes**: Apa yang berubah sebelum masalah muncul?\n\nSaya akan memberikan panduan step-by-step untuk menyelesaikan masalah Anda. Semakin detail informasinya, semakin akurat solusi yang bisa saya tawarkan!"
+                ]
+            },
+            opinion: {
+                patterns: ['menurutmu', 'opini', 'opinion', 'think', 'what do you think', 'better', 'lebih baik', 'sebaiknya', 'should', 'must','],
+                responses: [
+                    "Berdasarkan analisis saya, berikut pendapat saya: 💭\n\n[Sebagai AI, saya memberikan rekomendasi berdasarkan data, best practices, dan konsensus komunitas developer.]\n\nUntuk memberikan opini yang lebih akurat, saya perlu tahu:\n\n• Konteks penggunaan Anda (personal/project/startup/enterprise)?\n• Prioritas utama (kecepatan development/performa/skalabilitas/harga)?\n• Tim dan sumber daya yang tersedia?\n\nDengan konteks ini, saya bisa memberikan rekomendasi yang lebih sesuai dengan kebutuhan spesifik Anda.",
+                    "Pertanyaan bagus tentang opinion! ⚖️ Saya akan berbagi perspektif:\n\n📊 **Faktor yang perlu dipertimbangkan:**\n• Use case spesifik Anda\n• Budget dan timeline\n• Skillset tim\n• Requirements jangka panjang\n\n💡 **Rekomendasi umum**:\n• Untuk prototyping cepat: Gunakan tools yang familiar\n• Untuk production: Prioritaskan scalability dan maintainability\n• Untuk learning: Fokus pada fundamental concepts\n\nNamun setiap situasi unik! Ceritakan lebih detail kondisi Anda agar saya bisa memberikan saran yang lebih personal dan actionable."
+                ]
+            },
+            gratitude: {
+                patterns: ['terima kasih', 'thanks', 'thank you', 'makasih', 'good job', 'bagus', 'nice', 'mantap', 'keren', 'good'],
+                responses: [
+                    "Sama-sama! 😊 Senang bisa membantu Anda. Jika nanti ada pertanyaan lain atau butuh bantuan lagi, jangan ragu untuk kembali. Saya selalu siap membantu! 👋",
+                    "Terima kasih kembali! 🙏 Senang sekali jika saya bisa bermanfaat. Jangan lupa follow project ini di GitHub dan bantu share ke teman-teman yang mungkin membutuhkan! ⭐",
+                    "Pleasure helping you! 🌟 Jika Anda mendapatkan value dari tools ini, hal terpenting adalah terus belajar dan eksplorasi. Teknologi berkembang cepat, stay updated! 🚀"
+                ]
+            },
+            goodbye: {
+                patterns: ['bye', 'dadah', 'sampai jumpa', 'goodbye', 'see you', 'nanti ketemu', 'selamat tinggal'],
+                responses: [
+                    "Sampai jumpa lagi! 👋 Semoga hari Anda menyenangkan. Jangan ragu untuk kembali kapan saja jika butuh bantuan. Saya selalu siap sapa Anda! 😊",
+                    "Goodbye! 👋 Terima kasih sudah mengobrol dengan saya. Semoga berhasil dengan project Anda! Come back anytime! 🚀",
+                    "Sampai ketemu lagi! 🙏 Semoga bermanfaat apa yang sudah kita diskusikan. Jumpa di lain waktu! 💪"
+                ]
+            },
+            unclear: {
+                patterns: ['...', '?'],
+                responses: [
+                    "Hmm, saya ingin membantu tapi butuh sedikit clarification. 🙏 Bisa jelaskan lebih detail apa yang sedang Anda pikirkan atau butuhkan? Berikut beberapa suggestion:\n\n💬 'Apa itu [topik tertentu]?'\n🔧 'Saya butuh bantuan dengan [masalah spesifik]'\n💡 'Tips untuk [konteks tertentu]'\n🤔 'Bandingkan [A] dan [B]'\n\nAtau bisa klik salah satu quick action di bawah untuk mulai!",
+                    "Saya ingin memastikan bisa membantu Anda dengan tepat. 🤔 Bisa elaborasi sedikit? Misalnya:\n\n• Topik apa yang sedang Anda pikirkan?\n• Ada konteks tertentu yang perlu saya ketahui?\n• Apakah Anda sedang menyelesaikan tugas spesifik?\n\nDengan informasi tambahan, saya bisa memberikan jawaban yang lebih useful dan relevant untuk Anda! 💡"
+                ]
+            },
+            default: {
+                patterns: [],
+                responses: [
+                    "Terima kasih sudah berbagi! 🙏 Itu topik yang menarik. Berdasarkan apa yang Anda sampaikan, saya ingin membantu lebih detail. Bisa elaborasi sedikit?\n\nBeberapa hal yang mungkin membantu:\n• Konteks atau background situation\n• Spesifik apa yang ingin dicapai\n• Apakah ada constraints atau limitations\n\nAtau, apakah Anda ingin saya jelaskan topik tertentu, bantu dengan coding, atau memberikan rekomendasi? Saya siap dalam berbagai format! 💪",
+                    "Saya menangkap pesan Anda! 🤖 Sebagai AI, saya senang mendiskusikan berbagai topik. Agar conversation kita lebih produktif, boleh saya tahu:\n\n🔹 Apa tujuan utama Anda dalam diskusi ini?\n🔹 Apakah Anda butuh informasi, bantuan teknis, atau pendapat?\n🔹 Sudah familiar dengan topiknya atau ini sesuatu yang baru?\n\nDengan pemahaman ini, saya bisa memberikan response yang lebih targeted dan valuable untuk Anda! ✨",
+                    "Menarik! Saya appreciate Anda berbagi ini. 💭 Berdasarkan apa yang Anda sampaikan, berikut beberapa thoughts:\n\n📌 Yang penting untuk dipertimbangkan:\n• Pastikan Anda memahami fundamental concepts\n• Praktik langsung adalah cara terbaik untuk belajar\n• Jangan hesitate untuk bertanya jika ada yang unclear\n\nApakah ada aspek spesifik dari topik ini yang ingin Anda explore lebih dalam? Saya bisa memberikan explanation yang lebih detailed sesuai kebutuhan Anda! 🎯",
+                    "Saya understand bahwa ini penting untuk Anda. 👍 Mari kita explore lebih dalam. Saya bisa membantu dalam berbagai cara:\n\n📚 **Educational**: Menjelaskan konsep, teori, atau terminologi\n🛠️ **Practical**: Step-by-step guides, tutorials, best practices\n💡 **Analytical**: Membantu Anda think through masalah, pro-cons analysis\n🔧 **Technical**: Coding help, debugging, solution architecture\n\nApa approach yang paling helpful untuk Anda saat ini? Atau mau saya decide based on context? Saya flexible! 😊"
+                ]
+            }
+        };
+        
+        // Smart response function
+        function getSmartResponse(userMessage) {
+            const lowerMsg = userMessage.toLowerCase();
+            
+            // Check each category
+            for (const [category, data] of Object.entries(knowledgeBase)) {
+                if (category === 'default') continue;
+                
+                for (const pattern of data.patterns) {
+                    if (lowerMsg.includes(pattern)) {
+                        const responses = data.responses;
+                        return responses[Math.floor(Math.random() * responses.length)];
+                    }
+                }
+            }
+            
+            // Default response
+            return knowledgeBase.default.responses[Math.floor(Math.random() * knowledgeBase.default.responses.length)];
+        }
 
         function autoResize(textarea) {
             textarea.style.height = 'auto';
@@ -370,12 +465,12 @@
             // Show typing indicator
             showTyping();
 
-            // Simulate AI response (local, no server needed)
+            // Get intelligent response
             setTimeout(() => {
                 hideTyping();
-                const response = responses[Math.floor(Math.random() * responses.length)];
+                const response = getSmartResponse(message);
                 addMessage(response, 'bot');
-            }, 1000 + Math.random() * 1000);
+            }, 1500 + Math.random() * 1500);
         }
 
         // Focus input on load

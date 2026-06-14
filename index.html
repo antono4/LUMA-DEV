@@ -387,6 +387,42 @@
                     "Menarik! Saya appreciate Anda berbagi ini. 💭 Berdasarkan apa yang Anda sampaikan, berikut beberapa thoughts:\n\n📌 Yang penting untuk dipertimbangkan:\n• Pastikan Anda memahami fundamental concepts\n• Praktik langsung adalah cara terbaik untuk belajar\n• Jangan hesitate untuk bertanya jika ada yang unclear\n\nApakah ada aspek spesifik dari topik ini yang ingin Anda explore lebih dalam? Saya bisa memberikan explanation yang lebih detailed sesuai kebutuhan Anda! 🎯",
                     "Saya understand bahwa ini penting untuk Anda. 👍 Mari kita explore lebih dalam. Saya bisa membantu dalam berbagai cara:\n\n📚 **Educational**: Menjelaskan konsep, teori, atau terminologi\n🛠️ **Practical**: Step-by-step guides, tutorials, best practices\n💡 **Analytical**: Membantu Anda think through masalah, pro-cons analysis\n🔧 **Technical**: Coding help, debugging, solution architecture\n\nApa approach yang paling helpful untuk Anda saat ini? Atau mau saya decide based on context? Saya flexible! 😊"
                 ]
+            },
+            litellm: {
+                patterns: ['litellm', 'lite llm', 'litellm proxy', 'unified api'],
+                responses: [
+                    "LiteLLM adalah library Python yang powerful! 🔥 Ini memungkinkan Anda mengakses 100+ LLM dengan format API yang konsisten.\n\n🚀 **Supported Providers**:\n• OpenAI (GPT-4, GPT-3.5)\n• Anthropic (Claude 3)\n• Azure OpenAI\n• Google Vertex AI (Gemini)\n• AWS Bedrock\n• **MiniMax** 🇨🇳\n• Cohere, Hugging Face\n• And 100+ more!\n\n💡 **Keunggulan LiteLLM**:\n```python\nfrom litellm import completion\n\n# OpenAI\nresponse = completion(model='gpt-4', messages=[...])\n\n# Claude\nresponse = completion(model='claude-3-opus', messages=[...])\n\n# MiniMax\nresponse = completion(model='minimax-01', messages=[...])\n```\n\n📦 **Install**: `pip install litellm`\n\nAda yang ingin Anda ketahui lebih lanjut tentang LiteLLM?"
+                ]
+            },
+            minimax: {
+                patterns: ['minimax', 'minimax-01', 'minimax-m2', 'minimax-m2.7', 'abab'],
+                responses: [
+                    "MiniMax adalah perusahaan AI dari China! 🇨🇳\n\n🤖 **Model MiniMax**:\n• **MiniMax-01** - 456B parameters, MoE architecture\n• **Abab 6.5** - Model sebelumnya\n• **MiniMax Speech** - Text-to-Speech\n• **MiniMax Video** - AI video generation\n\n📊 **Spesifikasi MiniMax-01**:\n• 456 billion parameters\n• Mixture of Experts (MoE)\n• Supports 1M+ token context\n• Multi-modal capabilities\n• Cost-effective untuk enterprise\n\n🔗 **Integrasi via LiteLLM**:\n```python\nimport litellm\nresponse = litellm.completion(\n    model='minimax-01',\n    messages=[{'role': 'user', 'content': 'Hello!'}]\n)\n```\n\nMau tahu lebih lanjut?"
+                ]
+            },
+            cloud: {
+                patterns: ['cloud', 'aws', 'gcp', 'azure', 'google cloud', 'ec2', 's3', 'lambda', 'serverless', 'docker', 'kubernetes'],
+                responses: [
+                    "Cloud Computing adalah fondasi modern! ☁️\n\n🏢 **Major Providers**:\n• **AWS** - EC2, S3, Lambda, ECS, EKS\n• **Google Cloud** - Compute Engine, Cloud Run\n• **Azure** - VMs, Functions, AKS\n\n🔧 **Services Overview**:\n📊 **Compute**: VMs, Containers, Serverless\n💾 **Storage**: Object, Block, File storage\n🗄️ **Databases**: SQL, NoSQL, In-memory\n🌐 **Networking**: VPC, CDN, Load Balancers\n\n💡 **Best Practices**:\n• Use infrastructure as code (Terraform)\n• Implement auto-scaling\n• Enable monitoring & logging\n• Follow security best practices\n\nPertanyaan spesifik tentang cloud?"
+                ]
+            },
+            devops: {
+                patterns: ['devops', 'ci/cd', 'jenkins', 'github actions', 'gitlab ci', 'deployment', 'automation', 'terraform'],
+                responses: [
+                    "DevOps adalah kunci deployment efisien! 🔄\n\n🛠️ **Tools Stack**:\n• **CI/CD**: GitHub Actions, GitLab CI, Jenkins\n• **Container**: Docker, Podman\n• **Orchestration**: Kubernetes, Swarm\n• **IaC**: Terraform, Pulumi, Ansible\n• **Monitoring**: Prometheus, Grafana, ELK\n\n📋 **GitHub Actions Example**:\n```yaml\nname: Deploy\non: [push]\njobs:\n  build:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - name: Build\n        run: docker build -t myapp .\n      - name: Deploy\n        run: kubectl apply -f deployment.yaml\n```\n\n✅ **Benefits**: Faster delivery, improved reliability, automated testing\n\nAda pertanyaan DevOps?"
+                ]
+            },
+            datascience: {
+                patterns: ['data science', 'data analysis', 'pandas', 'numpy', 'jupyter', 'visualization', 'tensorflow', 'pytorch'],
+                responses: [
+                    "Data Science adalah kombinasi seni dan sains! 📊🔬\n\n📚 **Fundamental Skills**:\n• **Statistics**: Descriptive, inferential\n• **Programming**: Python, R, SQL\n• **Data Manipulation**: Pandas, NumPy\n• **Visualization**: Matplotlib, Plotly, Tableau\n• **ML**: Scikit-learn, TensorFlow, PyTorch\n\n📈 **Workflow**:\n1️⃣ Data Collection - SQL, APIs\n2️⃣ Data Cleaning - Handle missing values\n3️⃣ Exploratory Analysis\n4️⃣ Modeling\n5️⃣ Evaluation\n6️⃣ Deployment\n\n🐍 **Pandas Example**:\n```python\nimport pandas as pd\ndf = pd.read_csv('data.csv')\ndf.describe()\ndf.groupby('category').mean()\n```\n\nTopik Data Science apa yang ingin dibahas?"
+                ]
+            },
+            cybersecurity: {
+                patterns: ['security', 'hack', 'cybersecurity', 'ssl', 'tls', 'encryption', 'oauth', 'jwt', 'firewall'],
+                responses: [
+                    "Cybersecurity sangat penting! 🔐\n\n🛡️ **Core Concepts**:\n• **CIA Triad**: Confidentiality, Integrity, Availability\n• **Authentication**: Passwords, 2FA, MFA\n• **Authorization**: RBAC, ABAC\n• **Encryption**: AES, RSA, hashing\n\n🔧 **OWASP Top 10**:\n• Injection\n• Broken Authentication\n• Sensitive Data Exposure\n• XSS, SQL Injection, CSRF\n\n🔐 **Best Practices**:\n```javascript\n// JWT securely\nconst token = jwt.sign(payload, secret, {\n  expiresIn: '1h',\n  algorithm: 'HS256'\n});\n```\n\n📋 **Tools**: Nessus, Metasploit, Wireshark, Burp Suite\n\nPertanyaan keamanan?"
+                ]
             }
         };
         

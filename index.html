@@ -301,8 +301,8 @@
         const chatMessages = document.getElementById('chatMessages');
         const chatInput = document.getElementById('chatInput');
         
-        // API endpoint - change this to your backend URL
-        const API_URL = 'http://localhost:5000/api/chat';
+        // API endpoint - use relative URL (same origin)
+        const API_URL = '/api/chat';
 
         function autoResize(textarea) {
             textarea.style.height = 'auto';
@@ -379,8 +379,7 @@
 
             } catch (error) {
                 hideTyping();
-                // Fallback: simple response if API unavailable
-                addMessage('Maaf, saya sedang tidak bisa terhubung ke server. Silakan pastikan backend berjalan di port 5000.', 'bot');
+                addMessage('⚠️ Koneksi gagal. Pastikan server Flask berjalan: `python app.py`', 'bot');
                 console.error('Error:', error);
             }
         }

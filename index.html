@@ -301,8 +301,19 @@
         const chatMessages = document.getElementById('chatMessages');
         const chatInput = document.getElementById('chatInput');
         
-        // API endpoint - use relative URL (same origin)
-        const API_URL = '/api/chat';
+        // Standalone chatbot responses (no server needed)
+        const responses = [
+            "Halo! 👋 Apa kabar hari ini?",
+            "Saya AI Assistant. Ada yang bisa saya bantu?",
+            "Menarik! Ceritakan lebih lanjut.",
+            "Baik, saya pahami. Ada pertanyaan lain?",
+            "Saya siap membantu! Apa yang ingin Anda ketahui?",
+            "Terima kasih! Ada hal lain yang perlu dibicarakan?",
+            "Hmm, izinkan saya berpikir sebentar...",
+            "Berdasarkan informasi yang ada, saya sarankan untuk melanjutkan.",
+            "Bagus! Mari kita diskusikan lebih lanjut.",
+            "Saya di sini untuk membantu. Silakan tanyakan apa saja!"
+        ];
 
         function autoResize(textarea) {
             textarea.style.height = 'auto';
@@ -347,7 +358,7 @@
             if (typing) typing.remove();
         }
 
-        async function sendMessage() {
+        function sendMessage() {
             const message = chatInput.value.trim();
             if (!message) return;
 
@@ -359,29 +370,12 @@
             // Show typing indicator
             showTyping();
 
-            try {
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ message: message }),
-                });
-
+            // Simulate AI response (local, no server needed)
+            setTimeout(() => {
                 hideTyping();
-
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-
-                const data = await response.json();
-                addMessage(data.response, 'bot');
-
-            } catch (error) {
-                hideTyping();
-                addMessage('⚠️ Koneksi gagal. Pastikan server Flask berjalan: `python app.py`', 'bot');
-                console.error('Error:', error);
-            }
+                const response = responses[Math.floor(Math.random() * responses.length)];
+                addMessage(response, 'bot');
+            }, 1000 + Math.random() * 1000);
         }
 
         // Focus input on load

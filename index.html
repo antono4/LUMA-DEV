@@ -478,15 +478,22 @@
         function getSmartResponse(userMessage) {
             const lowerMsg = userMessage.toLowerCase();
             
-            // Check each category
+            // Collect all patterns with their category
+            const allPatterns = [];
             for (const [category, data] of Object.entries(knowledgeBase)) {
                 if (category === 'default') continue;
-                
                 for (const pattern of data.patterns) {
-                    if (lowerMsg.includes(pattern)) {
-                        const responses = data.responses;
-                        return responses[Math.floor(Math.random() * responses.length)];
-                    }
+                    allPatterns.push({ pattern, category, responses: data.responses });
+                }
+            }
+            
+            // Sort by pattern length (longest first) to match more specific patterns
+            allPatterns.sort((a, b) => b.pattern.length - a.pattern.length);
+            
+            // Find first matching pattern
+            for (const { pattern, responses } of allPatterns) {
+                if (lowerMsg.includes(pattern)) {
+                    return responses[Math.floor(Math.random() * responses.length)];
                 }
             }
             

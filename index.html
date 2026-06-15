@@ -321,16 +321,14 @@
                 const createData = await createResponse.json();
                 let conversationId = createData.app_conversation_id;
 
-                // If async, poll for READY status
+                // If not ready immediately, poll for READY status
                 if (!conversationId && createData.id) {
                     for (let i = 0; i < MAX_POLL_RETRIES; i++) {
                         await new Promise(r => setTimeout(r, 2000));
                         
                         const pollResponse = await fetch(
                             `${OPENHANDS_API_URL}/app-conversations/start-tasks?ids=${createData.id}`,
-                            {
-                                headers: { 'Authorization': `Bearer ${OPENHANDS_API_KEY}` }
-                            }
+                            { headers: { 'Authorization': `Bearer ${OPENHANDS_API_KEY}` } }
                         );
                         
                         if (pollResponse.ok) {
@@ -343,7 +341,13 @@
                     }
                 }
 
-                if (!conversationId) throw new Error('Failed to get conversation ID');
+                if (!conversationId) {
+                    console.error('API Response:', createData);
+                    throw new Error('Failed to get conversation ID');
+                }
+
+                // Small delay to ensure agent has started processing
+                await new Promise(r => setTimeout(r, 3000));
 
                 // Wait for response
                 for (let i = 0; i < MAX_EVENT_RETRIES; i++) {

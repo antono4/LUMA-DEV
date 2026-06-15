@@ -536,131 +536,51 @@
             // Add user message with prompt
             const userTemplate = document.getElementById('user-message-template');
             const userNode = userTemplate.content.cloneNode(true);
-            userNode.querySelector('.message-content').textContent = `Buatkan gambar: ${prompt}`;
+            userNode.querySelector('.message-content').textContent = `🎨 Buatkan gambar: "${prompt}"`;
             chatMessages.appendChild(userNode);
             scrollToBottom();
 
             try {
-                // Create conversation with image generation request
-                const stylePrompt = selectedImageStyle !== 'none' ? `, ${selectedImageStyle} style` : '';
-                const fullPrompt = `${prompt}${stylePrompt}`;
+                // Use Pollinations.ai - Free image generation (no API key needed)
+                // Style modifiers based on selection
+                let styleModifiers = {
+                    'none': '',
+                    'realistic': 'photorealistic, high quality, 8k',
+                    'anime': 'anime style, Studio Ghibli inspired',
+                    'digital': 'digital art, trending on artstation, concept art'
+                };
 
-                const createResponse = await fetch(`${OPENHANDS_API_URL}/app-conversations`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${OPENHANDS_API_KEY}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        initial_message: {
-                            content: [{ type: 'text', text: `Create an image: ${fullPrompt}` }]
-                        },
-                        title: `Image Generation - ${prompt.substring(0, 30)}`
-                    })
-                });
+                const styleText = styleModifiers[selectedImageStyle] || '';
+                const fullPrompt = styleText ? `${prompt}, ${styleText}` : prompt;
+                
+                // Encode prompt for URL
+                const encodedPrompt = encodeURIComponent(fullPrompt);
+                
+                // Pollinations.ai provides free image generation
+                const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=768&height=768&nologo=true&seed=${Date.now()}`;
 
-                if (!createResponse.ok) throw new Error('Failed to create conversation');
-
-                const createData = await createResponse.json();
-                let conversationId = createData.app_conversation_id;
-
-                // Poll for READY status if needed
-                if (!conversationId && createData.id) {
-                    for (let i = 0; i < 30; i++) {
-                        await new Promise(r => setTimeout(r, 2000));
-                        
-                        const pollResponse = await fetch(
-                            `${OPENHANDS_API_URL}/app-conversations/start-tasks?ids=${createData.id}`,
-                            { headers: { 'Authorization': `Bearer ${OPENHANDS_API_KEY}` } }
-                        );
-                        
-                        if (pollResponse.ok) {
-                            const pollData = await pollResponse.json();
-                            if (Array.isArray(pollData) && pollData[0]?.status === 'READY') {
-                                conversationId = pollData[0].app_conversation_id;
-                                break;
-                            }
-                        }
-                    }
-                }
-
-                if (!conversationId) {
-                    throw new Error('Failed to get conversation ID');
-                }
-
-                // Wait for response
-                await new Promise(r => setTimeout(r, 3000));
-
-                let imageUrl = null;
-                for (let i = 0; i < 45; i++) {
-                    await new Promise(r => setTimeout(r, 3000));
-
-                    const eventsResponse = await fetch(
-                        `${OPENHANDS_API_URL}/conversation/${conversationId}/events/search?limit=50`,
-                        { headers: { 'Authorization': `Bearer ${OPENHANDS_API_KEY}` } }
-                    );
-
-                    if (eventsResponse.ok) {
-                        const eventsData = await eventsResponse.json();
-                        const items = eventsData.items || [];
-                        
-                        for (let j = items.length - 1; j >= 0; j--) {
-                            const event = items[j];
-                            
-                            // Check for images in FinishAction
-                            if (event.source === 'agent' && event.kind === 'ActionEvent') {
-                                const action = event.action || {};
-                                if (action.kind === 'FinishAction') {
-                                    // Try to find image URL in the summary
-                                    const summary = action.summary || '';
-                                    const urlMatch = summary.match(/https?:\/\/[^\s]+\.(?:png|jpg|jpeg|gif|webp)/i);
-                                    if (urlMatch) {
-                                        imageUrl = urlMatch[0];
-                                        break;
-                                    }
-                                }
-                            }
-                            
-                            // Check for image in any text content
-                            if (event.source === 'agent' && event.kind === 'MessageEvent') {
-                                const llmMessage = event.llm_message || {};
-                                const content = llmMessage.content || [];
-                                for (const item of content) {
-                                    if (item.type === 'text' && item.text) {
-                                        const urlMatch = item.text.match(/https?:\/\/[^\s]+\.(?:png|jpg|jpeg|gif|webp)/i);
-                                        if (urlMatch) {
-                                            imageUrl = urlMatch[0];
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        
-                        if (imageUrl) break;
-                    }
-                }
+                // Wait a moment for the image to generate
+                await new Promise(r => setTimeout(r, 2000));
 
                 hideImageLoading();
 
-                if (imageUrl) {
-                    // Add image message
-                    const imgTemplate = document.getElementById('image-message-template');
-                    const imgNode = imgTemplate.content.cloneNode(true);
-                    imgNode.querySelector('img').src = imageUrl;
-                    imgNode.querySelector('.message-prompt').textContent = `"${prompt}"`;
-                    chatMessages.appendChild(imgNode);
-                    lucide.createIcons();
-                    scrollToBottom();
-                } else {
-                    // Show text fallback
-                    const aiTemplate = document.getElementById('ai-message-template');
-                    const aiNode = aiTemplate.content.cloneNode(true);
-                    aiNode.querySelector('.message-content').innerHTML = 'Maaf, saya tidak bisa membuat gambar saat ini. Fitur pembuat gambar masih dalam pengembangan. Silakan coba lagi nanti atau gunakan OpenHands untuk tugas coding lainnya! 🎨';
-                    chatMessages.appendChild(aiNode);
-                    lucide.createIcons();
-                    scrollToBottom();
-                }
+                // Add image message
+                const imgTemplate = document.getElementById('image-message-template');
+                const imgNode = imgTemplate.content.cloneNode(true);
+                imgNode.querySelector('img').src = imageUrl;
+                imgNode.querySelector('.message-prompt').textContent = `"${prompt}"${selectedImageStyle !== 'none' ? ` (${selectedImageStyle})` : ''}`;
+                chatMessages.appendChild(imgNode);
+                lucide.createIcons();
+                scrollToBottom();
+
+                // Add AI message explaining
+                const aiTemplate = document.getElementById('ai-message-template');
+                const aiNode = aiTemplate.content.cloneNode(true);
+                const styleName = selectedImageStyle !== 'none' ? selectedImageStyle : 'default';
+                aiNode.querySelector('.message-content').innerHTML = `Gambar dengan style <strong>${styleName}</strong> berhasil dibuat! 🎨<br><br>Klik gambar untuk melihat lebih besar, atau download untuk menyimpan.`;
+                chatMessages.appendChild(aiNode);
+                lucide.createIcons();
+                scrollToBottom();
 
             } catch (error) {
                 console.error('Image generation error:', error);

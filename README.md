@@ -75,7 +75,7 @@ python app.py
 ## 📁 Project Structure
 
 ```
-LUMA-DEV/
+LUMA AI/
 ├── index.html      # Frontend interface
 ├── app.py          # Flask backend API
 ├── ai_engine.py    # AI Engine + OpenHands knowledge

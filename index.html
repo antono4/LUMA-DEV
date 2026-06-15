@@ -319,7 +319,10 @@
                 },
                 body: JSON.stringify({ message: message })
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) throw new Error('API error');
+                return response.json();
+            })
             .then(data => {
                 // Remove typing indicator
                 const indicator = document.getElementById('typing-indicator');
@@ -339,20 +342,103 @@
                 scrollToBottom();
             })
             .catch(error => {
-                // Remove typing indicator
+                // Fallback: Use built-in response system
                 const indicator = document.getElementById('typing-indicator');
                 if (indicator) indicator.remove();
 
-                // Add Error Message
+                // Get smart response from built-in knowledge base
+                const response = getSmartResponse(message);
+                
+                // Add AI Message
                 const aiTemplate = document.getElementById('ai-message-template');
                 const aiNode = aiTemplate.content.cloneNode(true);
-                aiNode.querySelector('.message-content').innerHTML = '❌ Maaf, terjadi kesalahan koneksi. Silakan coba lagi.';
+                aiNode.querySelector('.message-content').innerHTML = response;
                 chatMessages.appendChild(aiNode);
                 
                 lucide.createIcons();
                 scrollToBottom();
             });
         });
+
+        // Built-in Knowledge Base for offline mode
+        function getSmartResponse(userMessage) {
+            const msg = userMessage.toLowerCase();
+            
+            if (msg.includes('openhands') || msg.includes('apa itu')) {
+                return `<p><strong>🤖 OpenHands</strong> adalah platform AI coding agent open-source yang powerful!</p>
+                <p class="mt-2"><strong>✨ Kapabilitas Utama:</strong></p>
+                <ul class="list-disc pl-5 mt-1 space-y-1">
+                    <li>🛡️ <strong>Fix Vulnerabilities</strong> - Scan & fix security issues</li>
+                    <li>🔍 <strong>Review PRs</strong> - Quality & security review</li>
+                    <li>🔄 <strong>Migrate Code</strong> - Legacy modernization</li>
+                    <li>🚨 <strong>Triage Incidents</strong> - Debugging & root cause</li>
+                </ul>
+                <p class="mt-2">💡 <strong>77K+ GitHub Stars!</strong> | 🚀 <strong>87% bugs fixed same-day!</strong></p>
+                <p class="mt-2">👉 <a href="https://app.all-hands.dev" target="_blank" class="text-indigo-600 underline">Coba gratis di app.all-hands.dev</a></p>`;
+            }
+            
+            if (msg.includes('halo') || msg.includes('hai') || msg.includes('hi')) {
+                return `<p>👋 Halo! Selamat datang!</p>
+                <p class="mt-2">Saya <strong>LUMA</strong>, asisten AI powered by <strong>OpenHands</strong>! 🚀</p>
+                <p class="mt-2">Tanyakan apa saja tentang:</p>
+                <ul class="list-disc pl-5 mt-1 space-y-1">
+                    <li>🤖 OpenHands & AI Agent</li>
+                    <li>💻 Programming & Coding</li>
+                    <li>🛡️ Security & Bug Fixing</li>
+                    <li>📚 Edukasi & Tutorial</li>
+                </ul>`;
+            }
+            
+            if (msg.includes('python') || msg.includes('code') || msg.includes('script') || msg.includes('kode')) {
+                return `<p>💻 Dengan senang hati! Saya bisa bantu programming! 🚀</p>
+                <p class="mt-2"><strong>Bahasa yang saya kuasai:</strong></p>
+                <ul class="list-disc pl-5 mt-1 space-y-1">
+                    <li>🐍 <strong>Python</strong> → Web dev, data science, AI/ML</li>
+                    <li>⚡ <strong>JavaScript</strong> → Frontend, backend (Node.js), React</li>
+                    <li>☕ <strong>Java</strong> → OOP, Android development</li>
+                    <li>🌐 <strong>HTML/CSS</strong> → Web design & styling</li>
+                </ul>
+                <p class="mt-2">💡 <strong>Tips:</strong> Gunakan <strong>OpenHands</strong> untuk automate coding tasks!</p>`;
+            }
+            
+            if (msg.includes('bug') || msg.includes('error') || msg.includes('fix')) {
+                return `<p>🛡️ <strong>OpenHands bisa fix bugs automaticamente!</strong></p>
+                <p class="mt-2"><strong>🔧 Bug Fixing dengan OpenHands:</strong></p>
+                <ul class="list-disc pl-5 mt-1 space-y-1">
+                    <li>Analyzes error logs</li>
+                    <li>Identifies root cause</li>
+                    <li>Proposes & implements fix</li>
+                    <li>Creates PR for review</li>
+                </ul>
+                <p class="mt-2">📊 <strong>"OpenHands autonomously fixes 87% of bug tickets same-day!"</strong></p>
+                <p class="mt-2">👉 <a href="https://app.all-hands.dev" target="_blank" class="text-indigo-600 underline">Mulai fix bugs di app.all-hands.dev</a></p>`;
+            }
+            
+            if (msg.includes('sdk') || msg.includes('tutorial') || msg.includes('belajar')) {
+                return `<p>📚 <strong>OpenHands SDK - Build Agents with Python!</strong></p>
+                <p class="mt-2"><strong>✨ SDK Features:</strong></p>
+                <ul class="list-disc pl-5 mt-1 space-y-1">
+                    <li>Model-agnostic (Claude, GPT, Gemini, dll)</li>
+                    <li>Tool calling system untuk coding tasks</li>
+                    <li>Conversation management</li>
+                    <li>Extensible architecture</li>
+                </ul>
+                <p class="mt-2"><strong>📖 Resources:</strong></p>
+                <ul class="list-disc pl-5 mt-1 space-y-1">
+                    <li><a href="https://docs.openhands.dev/sdk" target="_blank" class="text-indigo-600 underline">docs.openhands.dev/sdk</a></li>
+                    <li><a href="https://github.com/openhands/OpenHands" target="_blank" class="text-indigo-600 underline">GitHub (77K+ stars!)</a></li>
+                </ul>`;
+            }
+            
+            // Default response
+            return `<p>🙏 Terima kasih atas pesan Anda!</p>
+                <p class="mt-2">Saya sedang berjalan dalam <strong>mode offline</strong>. Untuk pengalaman penuh:</p>
+                <ul class="list-disc pl-5 mt-1 space-y-1">
+                    <li>🚀 <strong>Jalankan Flask server:</strong> <code>python app.py</code></li>
+                    <li>🌐 <strong>Atau coba online:</strong> <a href="https://app.all-hands.dev" target="_blank" class="text-indigo-600 underline">app.all-hands.dev</a></li>
+                </ul>
+                <p class="mt-2">💡 Tanyakan tentang <strong>OpenHands</strong>, <strong>programming</strong>, atau topik lainnya!</p>`;
+        }
     </script>
 </body>
 </html>

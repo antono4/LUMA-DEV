@@ -395,6 +395,26 @@
                                     }
                                 }
                             }
+                            
+                            // Handle ActionEvent with FinishAction (agent response)
+                            if (event.source === 'agent' && event.kind === 'ActionEvent') {
+                                const action = event.action || {};
+                                if (action.kind === 'FinishAction' && action.message) {
+                                    // Remove typing indicator
+                                    const indicator = document.getElementById('typing-indicator');
+                                    if (indicator) indicator.remove();
+
+                                    // Add AI Message
+                                    const aiTemplate = document.getElementById('ai-message-template');
+                                    const aiNode = aiTemplate.content.cloneNode(true);
+                                    aiNode.querySelector('.message-content').innerHTML = action.message.replace(/\n/g, '<br>');
+                                    chatMessages.appendChild(aiNode);
+                                    
+                                    lucide.createIcons();
+                                    scrollToBottom();
+                                    return;
+                                }
+                            }
                         }
                     }
                 }

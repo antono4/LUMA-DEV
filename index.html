@@ -213,6 +213,10 @@
         // Initialize Icons
         lucide.createIcons();
 
+        // OpenHands API Configuration
+        const OPENHANDS_API_KEY = 'sk-oh-JCQ144k6BaNUUbBJvKETPchE0VLdFBM0';
+        const OPENHANDS_API_URL = 'https://app.all-hands.dev/api/v1';
+
         // DOM Elements
         const chatForm = document.getElementById('chat-form');
         const chatInput = document.getElementById('chat-input');
@@ -311,55 +315,124 @@
             chatMessages.appendChild(typingNode);
             scrollToBottom();
 
-            // 3. Call API to get AI Response
-            fetch('/api/chat', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ message: message })
-            })
-            .then(response => {
-                if (!response.ok) throw new Error('API error');
-                return response.json();
-            })
-            .then(data => {
-                // Remove typing indicator
-                const indicator = document.getElementById('typing-indicator');
-                if (indicator) indicator.remove();
-
-                // Add AI Message
-                const aiTemplate = document.getElementById('ai-message-template');
-                const aiNode = aiTemplate.content.cloneNode(true);
-                
-                // Use response from API, convert newlines to <br>
-                const responseText = data.response || 'Maaf, terjadi kesalahan.';
-                aiNode.querySelector('.message-content').innerHTML = responseText.replace(/\n/g, '<br>');
-                chatMessages.appendChild(aiNode);
-                
-                // Re-initialize icons for any new dynamic content
-                lucide.createIcons();
-                scrollToBottom();
-            })
-            .catch(error => {
-                console.log('API unavailable, using fallback');
-                // Fallback: Use built-in response system
-                const indicator = document.getElementById('typing-indicator');
-                if (indicator) indicator.remove();
-
-                // Get smart response from built-in knowledge base
-                const response = getSmartResponse(message);
-                
-                // Add AI Message
-                const aiTemplate = document.getElementById('ai-message-template');
-                const aiNode = aiTemplate.content.cloneNode(true);
-                aiNode.querySelector('.message-content').innerHTML = response;
-                chatMessages.appendChild(aiNode);
-                
-                lucide.createIcons();
-                scrollToBottom();
-            });
+            // 3. Call OpenHands API directly
+            sendToOpenHands(message);
         });
+
+        // Send message to OpenHands API
+        async function sendToOpenHands(userMessage) {
+            try {
+                // Create conversation
+                const createResponse = await fetch(`${OPENHANDS_API_URL}/app-conversations`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${OPENHANDS_API_KEY}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        initial_message: {
+                            content: [{ type: 'text', text: userMessage }]
+                        },
+                        title: `LUMA Chat - ${userMessage.substring(0, 30)}`
+                    })
+                });
+
+                if (!createResponse.ok) throw new Error('Failed to create conversation');
+
+                const createData = await createResponse.json();
+                let conversationId = createData.app_conversation_id;
+
+                // If async, poll for READY status
+                if (!conversationId && createData.id) {
+                    for (let i = 0; i < 30; i++) {
+                        await new Promise(r => setTimeout(r, 2000));
+                        
+                        const pollResponse = await fetch(
+                            `${OPENHANDS_API_URL}/app-conversations/start-tasks?ids=${createData.id}`,
+                            {
+                                headers: { 'Authorization': `Bearer ${OPENHANDS_API_KEY}` }
+                            }
+                        );
+                        
+                        if (pollResponse.ok) {
+                            const pollData = await pollResponse.json();
+                            if (Array.isArray(pollData) && pollData[0]?.status === 'READY') {
+                                conversationId = pollData[0].app_conversation_id;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (!conversationId) throw new Error('Failed to get conversation ID');
+
+                // Wait for response
+                for (let i = 0; i < 30; i++) {
+                    await new Promise(r => setTimeout(r, 2000));
+                    
+                    const eventsResponse = await fetch(
+                        `${OPENHANDS_API_URL}/conversation/${conversationId}/events/search?limit=50`,
+                        {
+                            headers: { 'Authorization': `Bearer ${OPENHANDS_API_KEY}` }
+                        }
+                    );
+
+                    if (eventsResponse.ok) {
+                        const eventsData = await eventsResponse.json();
+                        const items = eventsData.items || [];
+                        
+                        for (let j = items.length - 1; j >= 0; j--) {
+                            const event = items[j];
+                            if (event.source === 'agent' && event.kind === 'MessageEvent') {
+                                const llmMessage = event.llm_message || {};
+                                const content = llmMessage.content || [];
+                                
+                                for (const item of content) {
+                                    if (item.type === 'text' && item.text) {
+                                        // Remove typing indicator
+                                        const indicator = document.getElementById('typing-indicator');
+                                        if (indicator) indicator.remove();
+
+                                        // Add AI Message
+                                        const aiTemplate = document.getElementById('ai-message-template');
+                                        const aiNode = aiTemplate.content.cloneNode(true);
+                                        aiNode.querySelector('.message-content').innerHTML = item.text.replace(/\n/g, '<br>');
+                                        chatMessages.appendChild(aiNode);
+                                        
+                                        lucide.createIcons();
+                                        scrollToBottom();
+                                        return;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Timeout - show fallback
+                showFallbackResponse(userMessage);
+
+            } catch (error) {
+                console.error('OpenHands API error:', error);
+                showFallbackResponse(userMessage);
+            }
+        }
+
+        // Fallback response
+        function showFallbackResponse(message) {
+            const indicator = document.getElementById('typing-indicator');
+            if (indicator) indicator.remove();
+
+            const response = getSmartResponse(message);
+            
+            const aiTemplate = document.getElementById('ai-message-template');
+            const aiNode = aiTemplate.content.cloneNode(true);
+            aiNode.querySelector('.message-content').innerHTML = response;
+            chatMessages.appendChild(aiNode);
+            
+            lucide.createIcons();
+            scrollToBottom();
+        }
 
         // Built-in Knowledge Base for offline mode
         function getSmartResponse(userMessage) {
@@ -435,8 +508,7 @@
             return `<p>🙏 Terima kasih atas pesan Anda!</p>
                 <p class="mt-2">Saya sedang berjalan dalam <strong>mode offline</strong>. Untuk pengalaman penuh:</p>
                 <ul class="list-disc pl-5 mt-1 space-y-1">
-                    <li>🚀 <strong>Jalankan Flask server:</strong> <code>python app.py</code></li>
-                    <li>🌐 <strong>Atau coba online:</strong> <a href="https://app.all-hands.dev" target="_blank" class="text-indigo-600 underline">app.all-hands.dev</a></li>
+                    <li>🌐 <strong>Coba online:</strong> <a href="https://app.all-hands.dev" target="_blank" class="text-indigo-600 underline">app.all-hands.dev</a></li>
                 </ul>
                 <p class="mt-2">💡 Tanyakan tentang <strong>OpenHands</strong>, <strong>programming</strong>, atau topik lainnya!</p>`;
         }

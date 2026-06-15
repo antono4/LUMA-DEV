@@ -547,21 +547,6 @@
             scrollToBottom();
 
             try {
-                // Style modifiers based on selection
-                let styleModifiers = {
-                    'none': '',
-                    'realistic': 'photorealistic, high quality, 8k',
-                    'anime': 'anime style, Studio Ghibli inspired',
-                    'digital': 'digital art, trending on artstation, concept art'
-                };
-
-                const styleText = styleModifiers[selectedImageStyle] || '';
-                const fullPrompt = styleText ? `${prompt}, ${styleText}` : prompt;
-                const encodedPrompt = encodeURIComponent(fullPrompt);
-                
-                // Use direct URL - img tags can load images directly even with CORS
-                const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=512&height=512&model=flux&nologo=true`;
-
                 const styleName = selectedImageStyle !== 'none' ? selectedImageStyle : 'default';
 
                 // Add image message with loading state
@@ -584,41 +569,46 @@
 
                 hideImageLoading();
 
-                // Load image directly (img tag can load it)
-                const img = new Image();
-                img.crossOrigin = 'anonymous';
-                img.onload = function() {
-                    // Image loaded successfully
+                // Call server-side API to generate image
+                const response = await fetch('/api/generate-image', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        prompt: prompt,
+                        style: selectedImageStyle
+                    })
+                });
+
+                if (response.ok && response.headers.get('content-type').includes('image')) {
+                    // Image generated successfully
+                    const blob = await response.blob();
+                    const imageUrl = URL.createObjectURL(blob);
+                    
                     imgContainer.innerHTML = `
                         <img src="${imageUrl}" class="max-w-full h-auto rounded-xl cursor-pointer hover:opacity-95 transition-opacity" onclick="openImagePreview(this.src)" alt="Generated image">
                         <div class="p-4 bg-gray-50 border-t border-gray-100">
                             <p class="text-sm text-gray-600">"${prompt}"${selectedImageStyle !== 'none' ? ` (${styleName})` : ''}</p>
                         </div>
                     `;
-                    lucide.createIcons();
-                };
-                img.onerror = function() {
-                    // Image failed to load, show link fallback
+                } else {
+                    // Error or rate limited
+                    const errorData = await response.json().catch(() => ({}));
                     imgContainer.innerHTML = `
-                        <div class="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl p-6 text-center border border-indigo-100">
-                            <div class="w-12 h-12 mx-auto mb-3 bg-indigo-100 rounded-full flex items-center justify-center">
-                                <svg class="w-6 h-6 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        <div class="bg-gradient-to-r from-red-50 to-orange-50 rounded-xl p-6 text-center border border-red-100">
+                            <div class="w-12 h-12 mx-auto mb-3 bg-red-100 rounded-full flex items-center justify-center">
+                                <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
                                 </svg>
                             </div>
-                            <p class="text-gray-600 mb-3 text-sm">Gambar berhasil dibuat! Klik untuk membuka:</p>
-                            <a href="${imageUrl}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm font-medium">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                                </svg>
-                                Lihat Gambar
-                            </a>
+                            <p class="text-gray-600 mb-2 text-sm">Layanan sedang sibuk. Silakan coba lagi dalam beberapa menit.</p>
+                            <p class="text-gray-400 text-xs">Tips: Coba prompt yang lebih sederhana</p>
                         </div>
                     `;
-                    lucide.createIcons();
-                };
-                img.src = imageUrl;
+                }
+
+                lucide.createIcons();
 
                 // Add AI message
                 const aiTemplate = document.getElementById('ai-message-template');

@@ -512,12 +512,7 @@
         function openImagePreview(src) {
             const modal = document.getElementById('image-preview-modal');
             document.getElementById('preview-image').src = src;
-            // Extract original URL from proxy if needed
-            let downloadUrl = src;
-            if (src.includes('corsproxy.io')) {
-                downloadUrl = decodeURIComponent(src.split('corsproxy.io?')[1]);
-            }
-            document.getElementById('download-btn').href = downloadUrl;
+            document.getElementById('download-btn').href = src;
             modal.classList.remove('hidden');
             modal.classList.add('flex');
             lucide.createIcons();
@@ -552,7 +547,6 @@
             scrollToBottom();
 
             try {
-                // Use Pollinations.ai - Free image generation (no API key needed)
                 // Style modifiers based on selection
                 let styleModifiers = {
                     'none': '',
@@ -563,79 +557,85 @@
 
                 const styleText = styleModifiers[selectedImageStyle] || '';
                 const fullPrompt = styleText ? `${prompt}, ${styleText}` : prompt;
-                
-                // Encode prompt for URL
                 const encodedPrompt = encodeURIComponent(fullPrompt);
-                const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=768&height=768&nologo=true`;
-
-                // Wait for image generation
-                await new Promise(r => setTimeout(r, 5000));
-
-                hideImageLoading();
-
-                // Try to fetch image using different methods
-                let finalImageUrl = imageUrl;
-                let imageLoadFailed = false;
                 
-                // Add image message container first
+                // Try multiple image services
+                const imageServices = [
+                    `https://image.pollinations.ai/prompt/${encodedPrompt}?width=512&height=512&model=flux&nologo=true`,
+                    `https://image.pollinations.ai/prompt/${encodedPrompt}?width=512&height=512&nologo=true`
+                ];
+
+                const styleName = selectedImageStyle !== 'none' ? selectedImageStyle : 'default';
+
+                // Add loading image message
                 const imgTemplate = document.getElementById('image-message-template');
                 const imgNode = imgTemplate.content.cloneNode(true);
-                const imgElement = imgNode.querySelector('img');
+                const imgContainer = imgNode.querySelector('.rounded-2xl');
                 
-                imgNode.querySelector('.message-prompt').textContent = `"${prompt}"${selectedImageStyle !== 'none' ? ` (${selectedImageStyle})` : ''}`;
+                imgNode.querySelector('.message-prompt').textContent = `"${prompt}"${selectedImageStyle !== 'none' ? ` (${styleName})` : ''}`;
                 chatMessages.appendChild(imgNode);
                 scrollToBottom();
 
-                // Try to load image directly first
-                try {
-                    const response = await fetch(imageUrl);
-                    if (response.ok) {
-                        const blob = await response.blob();
-                        const dataUrl = URL.createObjectURL(blob);
-                        imgElement.src = dataUrl;
-                    }
-                } catch (e) {
-                    // Direct fetch failed, try proxy
-                    console.log('Direct fetch failed, trying proxy...');
+                hideImageLoading();
+
+                // Try to load image with timeout
+                let imageLoaded = false;
+                
+                for (const imageUrl of imageServices) {
+                    if (imageLoaded) break;
+                    
                     try {
-                        const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(imageUrl)}`;
-                        const proxyResponse = await fetch(proxyUrl);
-                        if (proxyResponse.ok) {
-                            const blob = await proxyResponse.blob();
-                            const dataUrl = URL.createObjectURL(blob);
-                            imgElement.src = dataUrl;
+                        const response = await Promise.race([
+                            fetch(imageUrl),
+                            new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 10000))
+                        ]);
+                        
+                        if (response && response.ok) {
+                            const blob = await response.blob();
+                            if (blob.type.startsWith('image/')) {
+                                const dataUrl = await blobToDataUrl(blob);
+                                imgContainer.innerHTML = `
+                                    <img src="${dataUrl}" class="max-w-full h-auto rounded-xl cursor-pointer hover:opacity-95 transition-opacity" onclick="openImagePreview(this.src)" alt="Generated image">
+                                    <div class="p-4 bg-gray-50 border-t border-gray-100">
+                                        <p class="text-sm text-gray-600">"${prompt}"${selectedImageStyle !== 'none' ? ` (${styleName})` : ''}</p>
+                                    </div>
+                                `;
+                                imageLoaded = true;
+                            }
                         }
-                    } catch (e2) {
-                        // Both methods failed, show link fallback
-                        imageLoadFailed = true;
-                        imgElement.style.display = 'none';
-                        imgElement.parentElement.innerHTML = `
-                            <div class="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl p-6 text-center border border-indigo-100">
-                                <div class="w-12 h-12 mx-auto mb-3 bg-indigo-100 rounded-full flex items-center justify-center">
-                                    <svg class="w-6 h-6 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                    </svg>
-                                </div>
-                                <p class="text-gray-600 mb-3 text-sm">Gambar berhasil dibuat! Klik untuk membuka:</p>
-                                <a href="${imageUrl}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm font-medium">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                                    </svg>
-                                    Lihat Gambar
-                                </a>
-                            </div>
-                        `;
+                    } catch (e) {
+                        console.log('Service failed, trying next...');
                     }
+                }
+
+                // If all services failed, show link
+                if (!imageLoaded) {
+                    const directUrl = imageServices[0];
+                    imgContainer.innerHTML = `
+                        <div class="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl p-6 text-center border border-indigo-100">
+                            <div class="w-12 h-12 mx-auto mb-3 bg-indigo-100 rounded-full flex items-center justify-center">
+                                <svg class="w-6 h-6 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                            </div>
+                            <p class="text-gray-600 mb-3 text-sm">Gambar berhasil dibuat! Klik untuk membuka:</p>
+                            <a href="${directUrl}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm font-medium">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                </svg>
+                                Lihat Gambar
+                            </a>
+                        </div>
+                    `;
                 }
 
                 lucide.createIcons();
 
-                // Add AI message explaining
+                // Add AI message
                 const aiTemplate = document.getElementById('ai-message-template');
                 const aiNode = aiTemplate.content.cloneNode(true);
-                const styleName = selectedImageStyle !== 'none' ? selectedImageStyle : 'default';
-                aiNode.querySelector('.message-content').innerHTML = `Gambar dengan style <strong>${styleName}</strong> berhasil dibuat! 🎨<br><br>${imageLoadFailed ? 'Gambar terbuka di tab baru.' : 'Klik gambar untuk melihat lebih besar.'}`;
+                aiNode.querySelector('.message-content').innerHTML = `Gambar dengan style <strong>${styleName}</strong> berhasil dibuat! 🎨<br><br>${imageLoaded ? 'Klik gambar untuk melihat lebih besar.' : 'Gambar terbuka di tab baru.'}`;
                 chatMessages.appendChild(aiNode);
                 lucide.createIcons();
                 scrollToBottom();
@@ -651,6 +651,16 @@
                 lucide.createIcons();
                 scrollToBottom();
             }
+        }
+
+        // Helper function to convert blob to data URL
+        function blobToDataUrl(blob) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(blob);
+            });
         }
 
         // Handle Form Submit

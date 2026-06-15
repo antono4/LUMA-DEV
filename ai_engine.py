@@ -14,8 +14,8 @@ from typing import List, Dict, Optional
 from dotenv import load_dotenv
 load_dotenv()
 
-# OpenHands Cloud API Configuration
-OPENHANDS_API_URL = "https://app.all-hands.dev/api"
+# OpenHands Cloud API Configuration (V1)
+OPENHANDS_API_URL = "https://app.all-hands.dev/api/v1"
 OPENHANDS_CLOUD_ENABLED = os.getenv('OPENHANDS_API_KEY') is not None
 
 class OpenHandsCapabilities:
@@ -167,8 +167,10 @@ Jawab dengan ramah, jelas, dan informatif."""
 
     def _get_openhands_cloud_response(self, api_key: str, user_message: str) -> str:
         """
-        Mendapatkan response dari OpenHands Cloud API
+        Mendapatkan response dari OpenHands Cloud API V1
         https://app.all-hands.dev
+        
+        Uses the V1 conversation API for chat interactions.
         """
         try:
             headers = {
@@ -176,28 +178,91 @@ Jawab dengan ramah, jelas, dan informatif."""
                 'Content-Type': 'application/json'
             }
             
+            # Convert conversation history to OpenHands format
+            history_content = []
+            for msg in self.conversation_history[:-1]:
+                if msg['role'] == 'user':
+                    history_content.append({"type": "text", "text": msg['content']})
+            
+            # Create new conversation
             payload = {
-                'message': user_message,
-                'conversation_history': self.conversation_history[:-1]
+                "initial_message": {
+                    "content": [{"type": "text", "text": user_message}]
+                },
+                "title": f"LUMA Chat - {user_message[:50]}"
             }
             
+            # Start conversation
             response = requests.post(
-                f'{OPENHANDS_API_URL}/chat',
+                f'{OPENHANDS_API_URL}/app-conversations',
                 headers=headers,
                 json=payload,
                 timeout=60
             )
             
-            if response.status_code == 200:
+            if response.status_code in [200, 201]:
                 data = response.json()
-                return data.get('response', data.get('message', ''))
+                
+                # Get conversation ID
+                conversation_id = data.get('app_conversation_id')
+                
+                if not conversation_id:
+                    # Async start - poll for ready
+                    start_task_id = data.get('id')
+                    if start_task_id:
+                        for _ in range(30):  # Wait up to 30 seconds
+                            import time
+                            time.sleep(1)
+                            task_response = requests.get(
+                                f'{OPENHANDS_API_URL}/app-conversations/start-tasks?ids={start_task_id}',
+                                headers=headers,
+                                timeout=30
+                            )
+                            if task_response.status_code == 200:
+                                task_data = task_response.json()
+                                # Response is a list
+                                if isinstance(task_data, list) and len(task_data) > 0:
+                                    task_item = task_data[0]
+                                    if task_item.get('status') == 'READY':
+                                        conversation_id = task_item.get('app_conversation_id')
+                                        break
+                
+                if conversation_id:
+                    # Wait for agent to respond
+                    import time
+                    for _ in range(30):  # Wait up to 60 seconds
+                        time.sleep(2)
+                        
+                        events_response = requests.get(
+                            f'{OPENHANDS_API_URL}/conversation/{conversation_id}/events/search?limit=50',
+                            headers=headers,
+                            timeout=60
+                        )
+                        
+                        if events_response.status_code == 200:
+                            events = events_response.json()
+                            items = events.get('items', [])
+                            
+                            # Extract assistant message from llm_message
+                            for event in reversed(items):
+                                if event.get('source') == 'agent' and event.get('kind') == 'MessageEvent':
+                                    llm_message = event.get('llm_message', {})
+                                    content = llm_message.get('content', [])
+                                    for item in content:
+                                        if item.get('type') == 'text' and item.get('text'):
+                                            return item.get('text', '')
+                    
+                    # If no response yet, return status
+                    return f"🔄 Conversation started! ID: {conversation_id}\n\nBuka https://app.all-hands.dev/conversations/{conversation_id} untuk melihat percakapan."
+                
+                return "⚠️ Gagal mendapatkan conversation ID dari OpenHands Cloud."
             else:
-                return f"Error dengan OpenHands Cloud API: {response.status_code}"
+                return f"❌ Error dengan OpenHands Cloud API: {response.status_code}\n\n{response.text[:200]}"
                 
         except requests.exceptions.Timeout:
-            return "Error: OpenHands Cloud timeout. Coba lagi atau gunakan provider lain."
+            return "⏱️ Timeout: OpenHands Cloud terlalu lama merespons."
         except Exception as e:
-            return f"Error dengan OpenHands Cloud API: {str(e)}"
+            return f"❌ Error dengan OpenHands Cloud API: {str(e)}"
 
     def _get_openai_response(self, api_key: str) -> str:
         """

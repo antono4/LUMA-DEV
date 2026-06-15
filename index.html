@@ -93,6 +93,144 @@
             box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15), 0 0 0 1px rgba(99, 102, 241, 0.1);
         }
     </style>
+    <!-- Dark Mode Styles -->
+    <style id="dark-mode-styles">
+        body.dark-mode {
+            background-color: #0f172a;
+            color: #e2e8f0;
+        }
+        body.dark-mode .bg-gray-50,
+        body.dark-mode main {
+            background: linear-gradient(to bottom, #1e293b, #0f172a) !important;
+        }
+        body.dark-mode .bg-white {
+            background-color: #1e293b !important;
+        }
+        body.dark-mode .bg-gradient-to-b {
+            background: linear-gradient(to bottom, #1e293b, #0f172a) !important;
+        }
+        body.dark-mode .glass {
+            background: rgba(30, 41, 59, 0.95) !important;
+        }
+        body.dark-mode .text-gray-800,
+        body.dark-mode .text-gray-700,
+        body.dark-mode .text-gray-600,
+        body.dark-mode .text-gray-500,
+        body.dark-mode .text-gray-400 {
+            color: #cbd5e1 !important;
+        }
+        body.dark-mode .text-gray-900 {
+            color: #f1f5f9 !important;
+        }
+        body.dark-mode .border-gray-100,
+        body.dark-mode .border-gray-200 {
+            border-color: #334155 !important;
+        }
+        body.dark-mode .hover\:bg-gray-100:hover {
+            background-color: #334155 !important;
+        }
+        body.dark-mode .bg-gray-100 {
+            background-color: #334155 !important;
+        }
+        body.dark-mode .bg-gray-200 {
+            background-color: #475569 !important;
+        }
+        body.dark-mode input,
+        body.dark-mode textarea {
+            background-color: #1e293b !important;
+            color: #e2e8f0 !important;
+            border-color: #475569 !important;
+        }
+        body.dark-mode .bg-gradient-to-r {
+            background: linear-gradient(to right, #4f46e5, #7c3aed) !important;
+        }
+        body.dark-mode .shadow-premium {
+            box-shadow: 0 4px 24px -4px rgba(99, 102, 241, 0.3), 0 0 0 1px rgba(99, 102, 241, 0.1) !important;
+        }
+        body.dark-mode .shadow-card {
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+        }
+        body.dark-mode .placeholder-gray-400::placeholder {
+            color: #94a3b8 !important;
+        }
+        body.dark-mode #welcome-screen h1,
+        body.dark-mode #welcome-screen p {
+            color: #cbd5e1 !important;
+        }
+        body.dark-mode .border-white\/10 {
+            border-color: rgba(255, 255, 255, 0.1) !important;
+        }
+        body.dark-mode .border-white\/5 {
+            border-color: rgba(255, 255, 255, 0.05) !important;
+        }
+        body.dark-mode .bg-white\/5 {
+            background-color: rgba(255, 255, 255, 0.05) !important;
+        }
+        body.dark-mode .hover\:bg-white\/10:hover {
+            background-color: rgba(255, 255, 255, 0.1) !important;
+        }
+        body.dark-mode .scrollbar-thin::-webkit-scrollbar-thumb {
+            background: rgba(99, 102, 241, 0.3) !important;
+        }
+        body.dark-mode .border-indigo-500 {
+            border-color: #6366f1 !important;
+        }
+        body.dark-mode .ring-indigo-500 {
+            --tw-ring-color: #6366f1 !important;
+        }
+        body.dark-mode .text-indigo-600 {
+            color: #818cf8 !important;
+        }
+        body.dark-mode .gradient-text {
+            background: linear-gradient(135deg, #818cf8 0%, #a78bfa 50%, #f472b6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        body.dark-mode .bg-gradient-to-br {
+            background: linear-gradient(to bottom right, #4f46e5, #7c3aed) !important;
+        }
+        body.dark-mode .message-user {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%) !important;
+        }
+        body.dark-mode .message-ai {
+            background-color: #1e293b !important;
+            border: 1px solid #334155 !important;
+        }
+        body.dark-mode .bg-indigo-50 {
+            background-color: #1e1b4b !important;
+        }
+        body.dark-mode .bg-gray-50 {
+            background-color: #1e293b !important;
+        }
+        body.dark-mode .border-indigo-100 {
+            border-color: #3730a3 !important;
+        }
+        body.dark-mode .text-indigo-500 {
+            color: #818cf8 !important;
+        }
+        body.dark-mode .bg-indigo-100 {
+            background-color: #3730a3 !important;
+        }
+        body.dark-mode .from-indigo-50 {
+            --tw-gradient-from: #1e1b4b !important;
+        }
+        body.dark-mode .to-purple-50 {
+            --tw-gradient-to: #1e1b4b !important;
+        }
+        body.dark-mode .bg-red-50 {
+            background-color: #450a0a !important;
+        }
+        body.dark-mode .border-red-100 {
+            border-color: #7f1d1d !important;
+        }
+        body.dark-mode .bg-red-100 {
+            background-color: #7f1d1d !important;
+        }
+        body.dark-mode .border-gray-100\/50 {
+            border-color: #334155 !important;
+        }
+    </style>
 </head>
 <body class="bg-gray-50 text-gray-800 h-screen flex overflow-hidden">
 
@@ -170,8 +308,8 @@
                 </div>
             </div>
             <div class="flex items-center gap-2">
-                <button class="p-2.5 hover:bg-gray-100 rounded-xl text-gray-600 transition-colors" title="Tema">
-                    <i data-lucide="sun" class="w-5 h-5"></i>
+                <button onclick="toggleTheme()" id="theme-toggle" class="p-2.5 hover:bg-gray-100 rounded-xl text-gray-600 transition-colors" title="Ganti Tema">
+                    <i data-lucide="moon" class="w-5 h-5"></i>
                 </button>
                 <button class="p-2.5 hover:bg-gray-100 rounded-xl text-gray-600 transition-colors" title="Pengaturan">
                     <i data-lucide="settings" class="w-5 h-5"></i>
@@ -463,6 +601,48 @@
                 top: chatContainer.scrollHeight,
                 behavior: 'smooth'
             });
+        }
+
+        // Toggle Dark/Light Theme
+        function toggleTheme() {
+            const body = document.body;
+            const themeToggle = document.getElementById('theme-toggle');
+            const icon = themeToggle.querySelector('i');
+            
+            body.classList.toggle('dark-mode');
+            
+            const isDark = body.classList.contains('dark-mode');
+            
+            // Update icon
+            if (isDark) {
+                icon.setAttribute('data-lucide', 'sun');
+                themeToggle.title = 'Mode Terang';
+            } else {
+                icon.setAttribute('data-lucide', 'moon');
+                themeToggle.title = 'Mode Gelap';
+            }
+            
+            // Re-render icons
+            lucide.createIcons();
+            
+            // Save preference
+            localStorage.setItem('luma-theme', isDark ? 'dark' : 'light');
+        }
+
+        // Load saved theme on page load
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('luma-theme');
+            const themeToggle = document.getElementById('theme-toggle');
+            const icon = themeToggle?.querySelector('i');
+            
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+                if (icon) {
+                    icon.setAttribute('data-lucide', 'sun');
+                    themeToggle.title = 'Mode Terang';
+                }
+                lucide.createIcons();
+            }
         }
 
         // Image Generation Functions
@@ -886,6 +1066,9 @@
                 </ul>
                 <p class="mt-2">💡 Tanyakan tentang <strong>OpenHands</strong>, <strong>programming</strong>, atau topik lainnya!</p>`;
         }
+
+        // Initialize theme on load
+        loadTheme();
     </script>
 </body>
 </html>

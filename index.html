@@ -319,6 +319,7 @@
                 if (!createResponse.ok) throw new Error('Failed to create conversation');
 
                 const createData = await createResponse.json();
+                console.log('Create response:', createData);
                 let conversationId = createData.app_conversation_id;
 
                 // If not ready immediately, poll for READY status
@@ -363,6 +364,7 @@
                     if (eventsResponse.ok) {
                         const eventsData = await eventsResponse.json();
                         const items = eventsData.items || [];
+                        console.log(`Poll ${i}: ${items.length} events`);
                         
                         for (let j = items.length - 1; j >= 0; j--) {
                             const event = items[j];

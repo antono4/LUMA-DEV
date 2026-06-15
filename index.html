@@ -342,6 +342,7 @@
                 scrollToBottom();
             })
             .catch(error => {
+                console.log('API unavailable, using fallback');
                 // Fallback: Use built-in response system
                 const indicator = document.getElementById('typing-indicator');
                 if (indicator) indicator.remove();

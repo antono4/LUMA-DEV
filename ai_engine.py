@@ -1,17 +1,22 @@
 """
 AI Engine - Modul untuk komunikasi dengan berbagai AI API
-Mendukung: OpenAI GPT, Anthropic Claude, Google Gemini, dll.
+Mendukung: OpenAI GPT, Anthropic Claude, Google Gemini, OpenHands Cloud, dll.
 Integrasi dengan OpenHands untuk kapabilitas AI Agent.
 """
 
 import os
 import json
 import re
+import requests
 from typing import List, Dict, Optional
 
 # Load environment variables from .env file
 from dotenv import load_dotenv
 load_dotenv()
+
+# OpenHands Cloud API Configuration
+OPENHANDS_API_URL = "https://app.all-hands.dev/api"
+OPENHANDS_CLOUD_ENABLED = os.getenv('OPENHANDS_API_KEY') is not None
 
 class OpenHandsCapabilities:
     """Knowledge base for OpenHands capabilities and integration."""
@@ -108,12 +113,23 @@ Jawab dengan ramah, jelas, dan informatif."""
         openai_key = os.getenv('OPENAI_API_KEY')
         anthropic_key = os.getenv('ANTHROPIC_API_KEY')
         gemini_key = os.getenv('GEMINI_API_KEY')
+        openhands_key = os.getenv('OPENHANDS_API_KEY')
         
         response = None
         error_message = None
         
-        # Coba gunakan OpenAI dulu
-        if openai_key:
+        # 1. Coba OpenHands Cloud dulu (prioritas tertinggi)
+        if openhands_key:
+            try:
+                response = self._get_openhands_cloud_response(openhands_key, user_message)
+                if response and "Error" not in response:
+                    return self._finalize_response(response)
+                error_message = response
+            except Exception as e:
+                error_message = str(e)
+        
+        # 2. Coba gunakan OpenAI
+        if response is None and openai_key:
             try:
                 response = self._get_openai_response(openai_key)
                 if "Error dengan OpenAI API" in response:
@@ -122,7 +138,7 @@ Jawab dengan ramah, jelas, dan informatif."""
             except Exception as e:
                 error_message = str(e)
         
-        # Jika OpenAI gagal, coba Claude
+        # 3. Jika OpenAI gagal, coba Claude
         if response is None and anthropic_key:
             try:
                 response = self._get_anthropic_response(anthropic_key)
@@ -131,21 +147,57 @@ Jawab dengan ramah, jelas, dan informatif."""
             except Exception as e:
                 error_message = str(e)
         
-        # Jika tidak ada keduanya atau gagal, gunakan fallback
+        # 4. Jika tidak ada keduanya atau gagal, gunakan fallback
         if response is None:
             response = self._get_fallback_response(user_message)
         
-        # Tambahkan response ke history
+        return self._finalize_response(response)
+
+    def _finalize_response(self, response: str) -> str:
+        """Finalize response by adding to history and limiting size."""
         self.conversation_history.append({
             'role': 'assistant',
             'content': response
         })
         
-        # Batasi ukuran history
         if len(self.conversation_history) > self.max_history:
             self.conversation_history = self.conversation_history[-self.max_history:]
         
         return response
+
+    def _get_openhands_cloud_response(self, api_key: str, user_message: str) -> str:
+        """
+        Mendapatkan response dari OpenHands Cloud API
+        https://app.all-hands.dev
+        """
+        try:
+            headers = {
+                'Authorization': f'Bearer {api_key}',
+                'Content-Type': 'application/json'
+            }
+            
+            payload = {
+                'message': user_message,
+                'conversation_history': self.conversation_history[:-1]
+            }
+            
+            response = requests.post(
+                f'{OPENHANDS_API_URL}/chat',
+                headers=headers,
+                json=payload,
+                timeout=60
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                return data.get('response', data.get('message', ''))
+            else:
+                return f"Error dengan OpenHands Cloud API: {response.status_code}"
+                
+        except requests.exceptions.Timeout:
+            return "Error: OpenHands Cloud timeout. Coba lagi atau gunakan provider lain."
+        except Exception as e:
+            return f"Error dengan OpenHands Cloud API: {str(e)}"
 
     def _get_openai_response(self, api_key: str) -> str:
         """
@@ -630,12 +682,15 @@ Which path interests you most? 🎯"""
     def get_available_models(self) -> Dict[str, str]:
         """Mengembalikan daftar model AI yang tersedia"""
         models = {
-            'openai': 'GPT-3.5 Turbo (Default)',
+            'openhands_cloud': 'OpenHands Cloud ☁️ (Prioritas Tertinggi)',
+            'openai': 'GPT-3.5 Turbo',
             'anthropic': 'Claude 3 Sonnet',
         }
         
         # Tambahkan info berdasarkan API key yang tersedia
         available = []
+        if os.getenv('OPENHANDS_API_KEY'):
+            available.append('openhands_cloud')
         if os.getenv('OPENAI_API_KEY'):
             available.append('openai')
         if os.getenv('ANTHROPIC_API_KEY'):
@@ -645,5 +700,6 @@ Which path interests you most? 🎯"""
         
         return {
             'available': available,
-            'all_models': models
+            'all_models': models,
+            'cloud_url': 'https://app.all-hands.dev'
         }

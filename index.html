@@ -559,58 +559,46 @@
                 const fullPrompt = styleText ? `${prompt}, ${styleText}` : prompt;
                 const encodedPrompt = encodeURIComponent(fullPrompt);
                 
-                // Try multiple image services
-                const imageServices = [
-                    `https://image.pollinations.ai/prompt/${encodedPrompt}?width=512&height=512&model=flux&nologo=true`,
-                    `https://image.pollinations.ai/prompt/${encodedPrompt}?width=512&height=512&nologo=true`
-                ];
+                // Use direct URL - img tags can load images directly even with CORS
+                const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=512&height=512&model=flux&nologo=true`;
 
                 const styleName = selectedImageStyle !== 'none' ? selectedImageStyle : 'default';
 
-                // Add loading image message
+                // Add image message with loading state
                 const imgTemplate = document.getElementById('image-message-template');
                 const imgNode = imgTemplate.content.cloneNode(true);
                 const imgContainer = imgNode.querySelector('.rounded-2xl');
                 
                 imgNode.querySelector('.message-prompt').textContent = `"${prompt}"${selectedImageStyle !== 'none' ? ` (${styleName})` : ''}`;
+                
+                // Show loading placeholder first
+                imgContainer.innerHTML = `
+                    <div class="flex flex-col items-center justify-center py-8">
+                        <div class="w-12 h-12 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin mb-4"></div>
+                        <p class="text-gray-500 text-sm">Membuat gambar...</p>
+                    </div>
+                `;
+                
                 chatMessages.appendChild(imgNode);
                 scrollToBottom();
 
                 hideImageLoading();
 
-                // Try to load image with timeout
-                let imageLoaded = false;
-                
-                for (const imageUrl of imageServices) {
-                    if (imageLoaded) break;
-                    
-                    try {
-                        const response = await Promise.race([
-                            fetch(imageUrl),
-                            new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 10000))
-                        ]);
-                        
-                        if (response && response.ok) {
-                            const blob = await response.blob();
-                            if (blob.type.startsWith('image/')) {
-                                const dataUrl = await blobToDataUrl(blob);
-                                imgContainer.innerHTML = `
-                                    <img src="${dataUrl}" class="max-w-full h-auto rounded-xl cursor-pointer hover:opacity-95 transition-opacity" onclick="openImagePreview(this.src)" alt="Generated image">
-                                    <div class="p-4 bg-gray-50 border-t border-gray-100">
-                                        <p class="text-sm text-gray-600">"${prompt}"${selectedImageStyle !== 'none' ? ` (${styleName})` : ''}</p>
-                                    </div>
-                                `;
-                                imageLoaded = true;
-                            }
-                        }
-                    } catch (e) {
-                        console.log('Service failed, trying next...');
-                    }
-                }
-
-                // If all services failed, show link
-                if (!imageLoaded) {
-                    const directUrl = imageServices[0];
+                // Load image directly (img tag can load it)
+                const img = new Image();
+                img.crossOrigin = 'anonymous';
+                img.onload = function() {
+                    // Image loaded successfully
+                    imgContainer.innerHTML = `
+                        <img src="${imageUrl}" class="max-w-full h-auto rounded-xl cursor-pointer hover:opacity-95 transition-opacity" onclick="openImagePreview(this.src)" alt="Generated image">
+                        <div class="p-4 bg-gray-50 border-t border-gray-100">
+                            <p class="text-sm text-gray-600">"${prompt}"${selectedImageStyle !== 'none' ? ` (${styleName})` : ''}</p>
+                        </div>
+                    `;
+                    lucide.createIcons();
+                };
+                img.onerror = function() {
+                    // Image failed to load, show link fallback
                     imgContainer.innerHTML = `
                         <div class="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl p-6 text-center border border-indigo-100">
                             <div class="w-12 h-12 mx-auto mb-3 bg-indigo-100 rounded-full flex items-center justify-center">
@@ -619,7 +607,7 @@
                                 </svg>
                             </div>
                             <p class="text-gray-600 mb-3 text-sm">Gambar berhasil dibuat! Klik untuk membuka:</p>
-                            <a href="${directUrl}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm font-medium">
+                            <a href="${imageUrl}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm font-medium">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
@@ -628,14 +616,14 @@
                             </a>
                         </div>
                     `;
-                }
-
-                lucide.createIcons();
+                    lucide.createIcons();
+                };
+                img.src = imageUrl;
 
                 // Add AI message
                 const aiTemplate = document.getElementById('ai-message-template');
                 const aiNode = aiTemplate.content.cloneNode(true);
-                aiNode.querySelector('.message-content').innerHTML = `Gambar dengan style <strong>${styleName}</strong> berhasil dibuat! 🎨<br><br>${imageLoaded ? 'Klik gambar untuk melihat lebih besar.' : 'Gambar terbuka di tab baru.'}`;
+                aiNode.querySelector('.message-content').innerHTML = `Gambar dengan style <strong>${styleName}</strong> berhasil dibuat! 🎨<br><br>Klik gambar untuk melihat lebih besar, atau download untuk menyimpan.`;
                 chatMessages.appendChild(aiNode);
                 lucide.createIcons();
                 scrollToBottom();
@@ -651,16 +639,6 @@
                 lucide.createIcons();
                 scrollToBottom();
             }
-        }
-
-        // Helper function to convert blob to data URL
-        function blobToDataUrl(blob) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = reject;
-                reader.readAsDataURL(blob);
-            });
         }
 
         // Handle Form Submit

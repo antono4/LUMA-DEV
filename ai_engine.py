@@ -67,7 +67,7 @@ class AIEngine:
         self.max_history = 20
         
         # System prompt untuk personality AI
-        self.system_prompt = """Kamu adalah AI Assistant yang helpful, friendly, dan informative.
+        self.system_prompt = """Kamu adalah LUMA yang helpful, friendly, dan informative.
 Kamu bisa membantu dalam berbagai topik seperti:
 - Programming dan coding
 - Penjelasan konsep teknologi
@@ -218,7 +218,7 @@ Jawab dengan ramah, jelas, dan informatif."""
         # Greeting patterns
         greetings = ['halo', 'hai', 'hi', 'hello', 'pagi', 'siang', 'sore', 'malam']
         if any(greet in user_message_lower for greet in greetings):
-            return "Halo! 👋 Selamat datang! Saya AI Assistant. Ada yang bisa saya bantu hari ini?\n\n💡 **Tips:** Tanyakan tentang OpenHands, programming, atau topik lainnya!"
+            return "Halo! 👋 Selamat datang! Saya LUMA. Ada yang bisa saya bantu hari ini?\n\n💡 **Tips:** Tanyakan tentang OpenHands, programming, atau topik lainnya!"
         
         # Programming help
         if any(word in user_message_lower for word in ['code', 'coding', 'program', 'python', 'javascript', 'java', 'html', 'css']):

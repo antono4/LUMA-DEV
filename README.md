@@ -1,11 +1,13 @@
-# 🤖 LUMA AI Chatbot - with OpenHands Intelligence
+# 🤖 LUMA AI - Powered by OpenHands SDK
 
-AI Chatbot interaktif dengan **OpenHands AI Agent capabilities** built-in! Buka file HTML langsung dan chatbot siap digunakan.
+AI Chatbot interaktif dengan **OpenHands SDK** untuk autonomous coding agent capabilities!
 
 ![Status](https://img.shields.io/badge/status-ready-brightgreen)
 ![HTML](https://img.shields.io/badge/HTML-5-orange)
 ![CSS](https://img.shields.io/badge/CSS-3-blue)
-![OpenHands](https://img.shields.io/badge/OpenHands-Integrated-blue)
+![Python](https://img.shields.io/badge/Python-3.8+-blue)
+![OpenHands](https://img.shields.io/badge/OpenHands-SDK-blue)
+![Stars](https://img.shields.io/badge/GitHub%20Stars-77K+-orange)
 
 ## 🚀 Quick Start
 
@@ -17,40 +19,36 @@ AI Chatbot interaktif dengan **OpenHands AI Agent capabilities** built-in! Buka 
 
 **Tidak perlu install Python, dependencies, atau server!**
 
-## ✨ Fitur Baru - OpenHands Integration
+## ✨ Fitur - OpenHands SDK Integration
 
-LUMA sekarang memiliki **OpenHands intelligence** built-in! Tanyakan tentang:
+LUMA menggunakan **OpenHands SDK** untuk kapabilitas AI coding agent:
 
-- 🤖 **"Apa itu OpenHands?"** - Learn about AI coding agents
-- 🛡️ **"How to fix bugs?"** - OpenHands can fix 87% of bugs same-day!
-- 🔍 **"OpenHands PR review"** - Automate code reviews
-- ☁️ **"OpenHands cloud"** - Try app.all-hands.dev for free
-- 📚 **"Getting started tutorial"** - Multiple ways to begin
-- 💻 **"OpenHands SDK"** - Build custom agents with Python
+- 🤖 **Autonomous Code Execution** - Jalankan kode secara otomatis
+- 🔍 **Code Analysis** - Analisis dan debugging kode
+- 🛡️ **Vulnerability Scanning** - Scan & fix security issues
+- 🔄 **Git Operations** - Repository management
 
-## 🤖 Powered by OpenHands
+## 🤖 Powered by OpenHands SDK
 
-LUMA AI Chatbot now includes OpenHands knowledge base:
+LUMA AI Chatbot menggunakan **OpenHands SDK** ([openhands.dev](https://openhands.dev)):
 
-### Kapabilitas OpenHands:
+### OpenHands Stats:
+- ⭐ **77K+ GitHub Stars**
+- 🚀 **87% bug tickets fixed same-day**
+- 🌍 **Trusted by TikTok, VMware, Roche, Amazon, Netflix**
+
+### Kapabilitas:
 - 🛡️ **Fix Vulnerabilities** - Scan & fix security issues
 - 🔍 **Review PRs** - AI-powered code review
 - 🔄 **Migrate Code** - Legacy modernization
 - 🚨 **Triage Incidents** - Debugging & root cause analysis
 
 ### Products:
-- 📦 **SDK** - Build agents with Python (docs.openhands.dev/sdk)
+- 📦 **SDK** - Build agents with Python ([docs.openhands.dev/sdk](https://docs.openhands.dev/sdk))
 - 💻 **CLI** - Terminal-based agentic power
 - 🌐 **Local GUI** - Web interface for local development
-- ☁️ **Cloud** - Free tier at app.all-hands.dev
+- ☁️ **Cloud** - Free tier at [app.all-hands.dev](https://app.all-hands.dev)
 - 🏢 **Enterprise** - Self-hosted deployment
-
-### Community:
-- ⭐ **77K+ GitHub Stars**
-- 🌍 **Trusted by engineers at TikTok, VMware, Roche, Amazon, Netflix**
-- 💬 **Active Slack community** (dub.sh/openhands)
-
-**Learn more:** [docs.openhands.dev](https://docs.openhands.dev)
 
 ## 🔧 For Full AI Power
 
@@ -76,9 +74,23 @@ python app.py
 
 ```
 LUMA AI/
-├── index.html      # Frontend interface
-├── app.py          # Flask backend API
-├── ai_engine.py    # AI Engine + OpenHands knowledge
-├── requirements.txt
+├── index.html           # Frontend interface
+├── app.py               # Flask backend API
+├── ai_engine.py         # AI Engine + OpenHands SDK
+├── requirements.txt      # Dependencies (including OpenHands SDK)
 └── .env.example
 ```
+
+## 🛠️ Technology Stack
+
+- **Frontend**: HTML5, CSS3, JavaScript
+- **Backend**: Python Flask
+- **AI Engine**: OpenAI, Anthropic Claude
+- **Agent SDK**: OpenHands SDK ([openhands.dev](https://openhands.dev))
+
+## 📚 Resources
+
+- [OpenHands Documentation](https://docs.openhands.dev)
+- [OpenHands GitHub](https://github.com/openhands/OpenHands)
+- [OpenHands SDK](https://docs.openhands.dev/sdk)
+- [Community](https://dub.sh/openhands)

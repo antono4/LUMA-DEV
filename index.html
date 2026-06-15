@@ -192,6 +192,9 @@
         // OpenHands API Configuration
         const OPENHANDS_API_KEY = 'sk-oh-7OUzIekYsyyC3sXww71Y4nVE2xJipPuK';
         const OPENHANDS_API_URL = 'https://app.all-hands.dev/api/v1';
+        const MAX_CREATE_RETRIES = 5;
+        const MAX_POLL_RETRIES = 45;
+        const MAX_EVENT_RETRIES = 60;
 
         // DOM Elements
         const chatForm = document.getElementById('chat-form');
@@ -320,7 +323,7 @@
 
                 // If async, poll for READY status
                 if (!conversationId && createData.id) {
-                    for (let i = 0; i < 30; i++) {
+                    for (let i = 0; i < MAX_POLL_RETRIES; i++) {
                         await new Promise(r => setTimeout(r, 2000));
                         
                         const pollResponse = await fetch(
@@ -343,7 +346,7 @@
                 if (!conversationId) throw new Error('Failed to get conversation ID');
 
                 // Wait for response
-                for (let i = 0; i < 30; i++) {
+                for (let i = 0; i < MAX_EVENT_RETRIES; i++) {
                     await new Promise(r => setTimeout(r, 2000));
                     
                     const eventsResponse = await fetch(

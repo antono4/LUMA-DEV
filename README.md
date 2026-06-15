@@ -1,12 +1,11 @@
-# 🤖 LUMA AI - Powered by OpenHands SDK
+# 🤖 LUMA AI - Powered by OpenHands
 
-AI Chatbot interaktif dengan **OpenHands SDK** untuk autonomous coding agent capabilities!
+AI Chatbot interaktif dengan **OpenHands Cloud API** untuk autonomous AI agent capabilities!
 
 ![Status](https://img.shields.io/badge/status-ready-brightgreen)
 ![HTML](https://img.shields.io/badge/HTML-5-orange)
 ![CSS](https://img.shields.io/badge/CSS-3-blue)
-![Python](https://img.shields.io/badge/Python-3.8+-blue)
-![OpenHands](https://img.shields.io/badge/OpenHands-SDK-blue)
+![OpenHands](https://img.shields.io/badge/OpenHands-Cloud-blue)
 ![Stars](https://img.shields.io/badge/GitHub%20Stars-77K+-orange)
 
 ## 🚀 Quick Start
@@ -14,23 +13,25 @@ AI Chatbot interaktif dengan **OpenHands SDK** untuk autonomous coding agent cap
 ```
 1. Double-click file index.html
 2. Buka di browser
-3. Mulai chat!
+3. Mulai chat dengan OpenHands AI!
 ```
 
-**Tidak perlu install Python, dependencies, atau server!**
+**✅ Tidak perlu install Python, dependencies, atau server!**
+**✅ Langsung terhubung ke OpenHands Cloud API!**
 
-## ✨ Fitur - OpenHands SDK Integration
+## ✨ Fitur
 
-LUMA menggunakan **OpenHands SDK** untuk kapabilitas AI coding agent:
+LUMA menggunakan **OpenHands Cloud API** untuk kapabilitas AI coding agent:
 
 - 🤖 **Autonomous Code Execution** - Jalankan kode secara otomatis
 - 🔍 **Code Analysis** - Analisis dan debugging kode
 - 🛡️ **Vulnerability Scanning** - Scan & fix security issues
 - 🔄 **Git Operations** - Repository management
+- 💬 **Interactive Chat** - Conversational AI interface
 
-## 🤖 Powered by OpenHands SDK
+## 🌐 Powered by OpenHands Cloud
 
-LUMA AI Chatbot menggunakan **OpenHands SDK** ([openhands.dev](https://openhands.dev)):
+LUMA AI Chatbot menggunakan **OpenHands Cloud API** ([app.all-hands.dev](https://app.all-hands.dev)):
 
 ### OpenHands Stats:
 - ⭐ **77K+ GitHub Stars**
@@ -50,47 +51,53 @@ LUMA AI Chatbot menggunakan **OpenHands SDK** ([openhands.dev](https://openhands
 - ☁️ **Cloud** - Free tier at [app.all-hands.dev](https://app.all-hands.dev)
 - 🏢 **Enterprise** - Self-hosted deployment
 
-## 🔧 For Full AI Power
+## 🔧 Custom API Key (Optional)
 
-Untuk AI responses yang lebih powerful, configure API keys:
+Untuk menggunakan API key sendiri:
 
-1. Buat file `.env`:
-```bash
-OPENAI_API_KEY=sk-your-key-here
-ANTHROPIC_API_KEY=your-anthropic-key
+1. Buka `index.html`
+2. Cari baris:
+```javascript
+const OPENHANDS_API_KEY = 'sk-oh-xxxxx';
 ```
-
-2. Install dependencies:
-```bash
-pip install -r requirements.txt
-```
-
-3. Jalankan server:
-```bash
-python app.py
-```
+3. Ganti dengan API key Anda dari [app.all-hands.dev](https://app.all-hands.dev/settings/api-keys)
 
 ## 📁 Project Structure
 
 ```
 LUMA AI/
-├── index.html           # Frontend interface
-├── app.py               # Flask backend API
+├── index.html           # Frontend interface (standalone)
+├── app.py               # Flask backend API (optional)
 ├── ai_engine.py         # AI Engine + OpenHands SDK
-├── requirements.txt      # Dependencies (including OpenHands SDK)
-└── .env.example
+├── requirements.txt      # Dependencies
+├── .env.example         # Environment template
+└── README.md
 ```
 
 ## 🛠️ Technology Stack
 
-- **Frontend**: HTML5, CSS3, JavaScript
-- **Backend**: Python Flask
-- **AI Engine**: OpenAI, Anthropic Claude
-- **Agent SDK**: OpenHands SDK ([openhands.dev](https://openhands.dev))
+- **Frontend**: HTML5, CSS3 (Tailwind), JavaScript
+- **API**: OpenHands Cloud API
+- **Backend**: Python Flask (optional)
+- **Agent**: OpenHands ([openhands.dev](https://openhands.dev))
+
+## 🎨 UI Features
+
+- Modern chat interface dengan Tailwind CSS
+- Responsive design (mobile + desktop)
+- Sidebar dengan chat history
+- Typing indicator
+- Suggestion buttons
+- Smooth animations
 
 ## 📚 Resources
 
 - [OpenHands Documentation](https://docs.openhands.dev)
 - [OpenHands GitHub](https://github.com/openhands/OpenHands)
 - [OpenHands SDK](https://docs.openhands.dev/sdk)
+- [Cloud API](https://app.all-hands.dev)
 - [Community](https://dub.sh/openhands)
+
+---
+
+Made with ❤️ using OpenHands

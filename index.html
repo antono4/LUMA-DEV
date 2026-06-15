@@ -566,45 +566,76 @@
                 
                 // Encode prompt for URL
                 const encodedPrompt = encodeURIComponent(fullPrompt);
-                
-                // Create image URL - try direct first, then use proxy
-                const directUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=768&height=768&nologo=true&seed=${Date.now()}`;
-                
-                // Use CORS proxy for browser compatibility
-                const imageUrl = `https://corsproxy.io?${encodeURIComponent(directUrl)}`;
+                const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=768&height=768&nologo=true`;
 
-                // Wait a moment for the image to generate
-                await new Promise(r => setTimeout(r, 3000));
+                // Wait for image generation
+                await new Promise(r => setTimeout(r, 5000));
 
                 hideImageLoading();
 
-                // Add image message with error handling
+                // Try to fetch image using different methods
+                let finalImageUrl = imageUrl;
+                let imageLoadFailed = false;
+                
+                // Add image message container first
                 const imgTemplate = document.getElementById('image-message-template');
                 const imgNode = imgTemplate.content.cloneNode(true);
                 const imgElement = imgNode.querySelector('img');
-                imgElement.src = imageUrl;
-                imgElement.onerror = function() {
-                    // Fallback to direct URL if proxy fails
-                    this.src = directUrl;
-                    this.onerror = function() {
-                        // Final fallback - show link
-                        this.style.display = 'none';
-                        this.parentElement.innerHTML = `<div class="bg-gray-100 rounded-xl p-4 text-center">
-                            <p class="text-gray-600 mb-2">Gambar sedang dimuat...</p>
-                            <a href="${directUrl}" target="_blank" class="text-indigo-600 hover:underline text-sm">Klik di sini untuk melihat gambar</a>
-                        </div>`;
-                    };
-                };
+                
                 imgNode.querySelector('.message-prompt').textContent = `"${prompt}"${selectedImageStyle !== 'none' ? ` (${selectedImageStyle})` : ''}`;
                 chatMessages.appendChild(imgNode);
-                lucide.createIcons();
                 scrollToBottom();
+
+                // Try to load image directly first
+                try {
+                    const response = await fetch(imageUrl);
+                    if (response.ok) {
+                        const blob = await response.blob();
+                        const dataUrl = URL.createObjectURL(blob);
+                        imgElement.src = dataUrl;
+                    }
+                } catch (e) {
+                    // Direct fetch failed, try proxy
+                    console.log('Direct fetch failed, trying proxy...');
+                    try {
+                        const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(imageUrl)}`;
+                        const proxyResponse = await fetch(proxyUrl);
+                        if (proxyResponse.ok) {
+                            const blob = await proxyResponse.blob();
+                            const dataUrl = URL.createObjectURL(blob);
+                            imgElement.src = dataUrl;
+                        }
+                    } catch (e2) {
+                        // Both methods failed, show link fallback
+                        imageLoadFailed = true;
+                        imgElement.style.display = 'none';
+                        imgElement.parentElement.innerHTML = `
+                            <div class="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl p-6 text-center border border-indigo-100">
+                                <div class="w-12 h-12 mx-auto mb-3 bg-indigo-100 rounded-full flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                    </svg>
+                                </div>
+                                <p class="text-gray-600 mb-3 text-sm">Gambar berhasil dibuat! Klik untuk membuka:</p>
+                                <a href="${imageUrl}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm font-medium">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                    </svg>
+                                    Lihat Gambar
+                                </a>
+                            </div>
+                        `;
+                    }
+                }
+
+                lucide.createIcons();
 
                 // Add AI message explaining
                 const aiTemplate = document.getElementById('ai-message-template');
                 const aiNode = aiTemplate.content.cloneNode(true);
                 const styleName = selectedImageStyle !== 'none' ? selectedImageStyle : 'default';
-                aiNode.querySelector('.message-content').innerHTML = `Gambar dengan style <strong>${styleName}</strong> berhasil dibuat! 🎨<br><br>Klik gambar untuk melihat lebih besar, atau download untuk menyimpan.`;
+                aiNode.querySelector('.message-content').innerHTML = `Gambar dengan style <strong>${styleName}</strong> berhasil dibuat! 🎨<br><br>${imageLoadFailed ? 'Gambar terbuka di tab baru.' : 'Klik gambar untuk melihat lebih besar.'}`;
                 chatMessages.appendChild(aiNode);
                 lucide.createIcons();
                 scrollToBottom();

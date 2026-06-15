@@ -218,85 +218,112 @@ Jawab dengan ramah, jelas, dan informatif."""
         # Greeting patterns
         greetings = ['halo', 'hai', 'hi', 'hello', 'pagi', 'siang', 'sore', 'malam']
         if any(greet in user_message_lower for greet in greetings):
-            return "Halo! 👋 Selamat datang! Saya LUMA. Ada yang bisa saya bantu hari ini?\n\n💡 **Tips:** Tanyakan tentang OpenHands, programming, atau topik lainnya!"
-        
+            return """👋 Halo! Selamat datang! 😊
+
+Saya **LUMA**, asisten AI Anda! ✨
+
+Saya bisa membantu Anda dengan:
+🖥️ Programming & coding
+🤖 Informasi tentang OpenHands
+📚 Edukasi & penjelasan
+💡 Brainstorming ide
+
+💡 **Tips:** Tanyakan apa saja, saya siap membantu! 🎯"""
+
         # Programming help
         if any(word in user_message_lower for word in ['code', 'coding', 'program', 'python', 'javascript', 'java', 'html', 'css']):
-            return """Tentu! Saya bisa membantu dengan programming. Beberapa hal yang bisa saya bantu:
+            return """💻 Dengan senang hati! Saya bisa bantu programming! 🚀
 
-🐍 **Python** - Web development, data science, AI/ML
-⚡ **JavaScript** - Frontend, backend (Node.js), React
-☕ **Java** - OOP, Android development
-🌐 **HTML/CSS** - Web design dan styling
+**Bahasa yang saya kuasai:** 🎨
 
-💡 **Pro Tip:** Gunakan **OpenHands** untuk automate coding tasks seperti fix bugs, generate tests, dan code review!
+🐍 **Python** → Web dev, data science, AI/ML
+⚡ **JavaScript** → Frontend, backend (Node.js), React
+☕ **Java** → OOP, Android development
+🌐 **HTML/CSS** → Web design & styling
+🔧 **C++** → Game dev, sistem performa tinggi
+📱 **Kotlin/Swift** → Mobile development
 
-Silakan beritahu saya:
-1. Bahasa pemrograman apa yang ingin Anda pelajari?
-2. Project apa yang sedang Anda kerjakan?
-3. Ada error atau masalah spesifik yang ingin ditanyakan?"""
+**Kenapa OpenHands? 🔥**
+Gunakan OpenHands untuk automate:
+• 🐛 Fix bugs automatically
+• ✅ Generate tests
+• 🔍 Code review
+
+Silakan beritahu saya: 📝
+1️⃣ Bahasa yang dipelajari?
+2️⃣ Project yang dikerjakan?
+3️⃣ Error yang dihadapi?"""
         
         # AI questions
         if any(word in user_message_lower for word in ['apa itu ai', 'artificial intelligence', 'machine learning', 'deep learning']):
-            return """**Artificial Intelligence (AI)** adalah cabang ilmu komputer yang fokus pada pembuatan mesin yang bisa belajar dan berpikir seperti manusia.
+            return """🧠 **Artificial Intelligence (AI)** 
+
+AI adalah cabang ilmu komputer untuk membuat mesin yang bisa belajar & berpikir! 🚀
 
 📊 **Jenis-jenis AI:**
-• **Machine Learning** - AI yang belajar dari data
-• **Deep Learning** - Menggunakan neural network berlapis
-• **NLP (Natural Language Processing)** - AI untuk memahami bahasa manusia
-• **AI Agents** - Autonomous AI yang bisa execute tasks (seperti OpenHands!)
+• 🎯 **Machine Learning** → AI yang belajar dari data
+• 🧬 **Deep Learning** → Neural network berlapis
+• 💬 **NLP** → Memahami bahasa manusia
+• 🤖 **AI Agents** → Autonomous AI (seperti **OpenHands**!)
 
-🤖 **Contoh AI yang populer:**
-• ChatGPT (OpenAI)
-• Claude (Anthropic)
-• Gemini (Google)
-• Llama (Meta)
-• **OpenHands** - AI coding agent open-source!
+🤖 **AI Populer:**
+• ChatGPT (OpenAI) 💬
+• Claude (Anthropic) 🧠
+• Gemini (Google) ✨
+• **OpenHands** 🔥 → AI coding agent open-source!
 
-Apakah Anda ingin tahu lebih detail tentang topik tertentu?"""
+💡 Mau tahu lebih detail topik tertentu? Tanyakan saja! 🎯"""
         
         # Help request
         if any(word in user_message_lower for word in ['bantu', 'tolong', 'help', 'how', 'cara']):
-            return """Tentu, saya dengan senang hati membantu! 😊
+            return """😊 Tentu, saya dengan senang hati membantu!
 
-**Topik yang bisa saya bantu:**
+**Topik yang bisa saya bantu:** 🎯
 
 🔧 **Programming**
-   - Code review, debugging, refactoring
-   - Generate tests, documentation
+   • Code review, debugging, refactoring
+   • Generate tests, documentation
 
 🤖 **OpenHands**
-   - AI coding agent untuk automate tasks
-   - Fix bugs, PR review, code migration
+   • AI coding agent untuk automate tasks
+   • Fix bugs, PR review, code migration
 
 📚 **Edukasi**
-   - Penjelasan konsep teknologi
-   - Tutorial dan best practices
+   • Penjelasan konsep teknologi
+   • Tutorial dan best practices
 
-Silakan ceritakan lebih detail apa yang Anda butuhkan!"""
-        
+🎨 **Kreativitas**
+   • Brainstorming ide
+   • Penulisan & editing teks
+
+Silakan ceritakan apa yang Anda butuhkan! 💬"""
+
         # Thanks/Gratitude
         if any(word in user_message_lower for word in ['terima kasih', 'thanks', 'thank you', 'makasih']):
-            return "Sama-sama! 😊 Senang bisa membantu. Jika ada pertanyaan lain, jangan ragu untuk bertanya!\n\n💡 **Coba tanyakan tentang OpenHands untuk automate coding tasks!**"
+            return """🙏 Sama-sama! Senang bisa membantu! 😊✨
+
+Ada pertanyaan lain? Jangan ragu untuk bertanya! 💬
+
+💡 **Fun fact:** OpenHands bisa fix 87% bug tickets same-day! 🔥"""
         
         # Default response
-        return f"""Terima kasih atas pesan Anda! Saya menerima: "{user_message}"
+        return f"""👋 Pesan diterima: "{user_message}"
 
-Maaf, untuk saat ini saya berjalan dalam mode demo karena belum ada API key yang dikonfigurasi.
+⚠️ Maaf, saya sedang berjalan dalam **mode demo** karena belum ada API key. 🔑
 
-**Untuk mengaktifkan AI yang sebenarnya:**
-1. Dapatkan API key dari OpenAI (openai.com/api) atau Anthropic
-2. Buat file `.env` dengan isi:
+**Untuk aktifkan AI penuh:** 🚀
+1️⃣ Dapatkan API key dari OpenAI atau Anthropic
+2️⃣ Buat file `.env`:
    ```
-   OPENAI_API_KEY=sk-your-key-here
+   OPENAI_API_KEY=sk-your-key
    ```
-3. Install dependencies: `pip install -r requirements.txt`
-4. Jalankan server: `python app.py`
+3️⃣ Install: `pip install -r requirements.txt`
+4️⃣ Jalankan: `python app.py`
 
-**💡 Atau coba OpenHands untuk AI coding agent:**
-👉 https://app.all-hands.dev (free tier available)
+💡 **Atau coba OpenHands gratis!**
+👉 https://app.all-hands.dev
 
-Apakah ada hal lain yang bisa saya bantu?"""
+Ada hal lain yang bisa saya bantu? 🎯"""
 
     def _handle_openhands_query(self, msg_lower: str, original_msg: str) -> str:
         """Handle OpenHands-specific queries with detailed responses."""

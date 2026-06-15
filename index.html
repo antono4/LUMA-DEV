@@ -3,570 +3,356 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Chatbot - Assistant</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <title>AI Chat Interface Mockup</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
         }
-
-        .chat-container {
-            width: 100%;
-            max-width: 500px;
-            height: 700px;
-            background: #ffffff;
-            border-radius: 20px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        .chat-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .avatar {
-            width: 48px;
-            height: 48px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-        }
-
-        .chat-info h2 {
-            font-size: 18px;
-            font-weight: 600;
-        }
-
-        .chat-info p {
-            font-size: 12px;
-            opacity: 0.9;
-        }
-
-        .status-indicator {
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
             width: 8px;
-            height: 8px;
-            background: #4ade80;
-            border-radius: 50%;
-            display: inline-block;
-            margin-right: 6px;
-            animation: pulse 2s infinite;
         }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        .chat-messages {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px;
-            background: #f8fafc;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .message {
-            max-width: 85%;
-            padding: 14px 18px;
-            border-radius: 18px;
-            font-size: 14px;
-            line-height: 1.5;
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .message.user {
-            align-self: flex-end;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-bottom-right-radius: 4px;
-        }
-
-        .message.bot {
-            align-self: flex-start;
-            background: white;
-            color: #1a1a2e;
-            border-bottom-left-radius: 4px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .message.typing {
-            display: flex;
-            gap: 4px;
-            padding: 16px 20px;
-        }
-
-        .typing-dot {
-            width: 8px;
-            height: 8px;
-            background: #94a3b8;
-            border-radius: 50%;
-            animation: typingBounce 1.4s infinite ease-in-out;
-        }
-
-        .typing-dot:nth-child(1) { animation-delay: 0s; }
-        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
-        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
-
-        @keyframes typingBounce {
-            0%, 60%, 100% { transform: translateY(0); }
-            30% { transform: translateY(-6px); }
-        }
-
-        .chat-input-container {
-            padding: 16px;
-            background: white;
-            border-top: 1px solid #e2e8f0;
-        }
-
-        .chat-input-wrapper {
-            display: flex;
-            gap: 12px;
-            align-items: flex-end;
-        }
-
-        .chat-input {
-            flex: 1;
-            padding: 14px 18px;
-            border: 2px solid #e2e8f0;
-            border-radius: 25px;
-            font-size: 14px;
-            font-family: 'Inter', sans-serif;
-            outline: none;
-            transition: border-color 0.3s, box-shadow 0.3s;
-            resize: none;
-            min-height: 50px;
-            max-height: 120px;
-        }
-
-        .chat-input:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        .send-button {
-            width: 56px;
-            height: 56px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
-            border-radius: 16px;
-            color: white;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-            flex-shrink: 0;
-        }
-
-        .send-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
-        }
-
-        .send-button:active {
-            transform: translateY(0) scale(0.95);
-        }
-
-        .send-button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .send-button svg {
-            width: 28px;
-            height: 28px;
-            transition: transform 0.2s;
-        }
-
-        .send-button:hover svg {
-            transform: translateX(2px);
-        }
-
-        @media (max-width: 480px) {
-            .send-button {
-                width: 48px;
-                height: 48px;
-                border-radius: 12px;
-            }
-            
-            .send-button svg {
-                width: 22px;
-                height: 22px;
-            }
-        }
-        
-        /* Code block styling */
-        .message code {
-            background: rgba(0,0,0,0.3);
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-family: 'Courier New', monospace;
-            font-size: 0.9em;
-        }
-        
-        .message pre {
-            background: rgba(0,0,0,0.4);
-            padding: 12px;
-            border-radius: 8px;
-            overflow-x: auto;
-            margin: 8px 0;
-        }
-        
-        .message pre code {
-            background: none;
-            padding: 0;
-        }
-
-        .quick-actions {
-            display: flex;
-            gap: 8px;
-            padding: 0 16px 12px;
-            flex-wrap: wrap;
-        }
-
-        .quick-action {
-            padding: 8px 14px;
-            background: #f1f5f9;
-            border: 1px solid #e2e8f0;
-            border-radius: 20px;
-            font-size: 12px;
-            color: #64748b;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .quick-action:hover {
-            background: #667eea;
-            color: white;
-            border-color: #667eea;
-        }
-
-        /* Scrollbar */
-        .chat-messages::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .chat-messages::-webkit-scrollbar-track {
+        ::-webkit-scrollbar-track {
             background: transparent;
         }
-
-        .chat-messages::-webkit-scrollbar-thumb {
+        ::-webkit-scrollbar-thumb {
             background: #cbd5e1;
-            border-radius: 3px;
+            border-radius: 4px;
         }
-
-        .chat-messages::-webkit-scrollbar-thumb:hover {
+        ::-webkit-scrollbar-thumb:hover {
             background: #94a3b8;
         }
 
-        /* Mobile responsive */
-        @media (max-width: 540px) {
-            body {
-                padding: 0;
-            }
-            
-            .chat-container {
-                height: 100vh;
-                border-radius: 0;
-                max-width: 100%;
-            }
+        /* Typing Animation */
+        .typing-dot {
+            animation: typing 1.4s infinite ease-in-out both;
+        }
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes typing {
+            0%, 80%, 100% { transform: scale(0); opacity: 0.5; }
+            40% { transform: scale(1); opacity: 1; }
         }
     </style>
 </head>
-<body>
-    <div class="chat-container">
-        <div class="chat-header">
-            <div class="avatar">🤖</div>
-            <div class="chat-info">
-                <h2>LUMA</h2>
-                <p><span class="status-indicator"></span>Online • Siap Membantu</p>
-            </div>
+<body class="bg-gray-50 text-gray-800 h-screen flex overflow-hidden">
+
+    <!-- Mobile Overlay -->
+    <div id="mobile-overlay" class="fixed inset-0 bg-black/50 z-20 hidden md:hidden" onclick="toggleSidebar()"></div>
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="bg-gray-900 text-gray-300 w-72 flex-shrink-0 flex flex-col h-full fixed md:relative z-30 transition-transform duration-300 ease-in-out transform -translate-x-full md:translate-x-0">
+        <!-- New Chat Button -->
+        <div class="p-4">
+            <button onclick="startNewChat()" class="flex items-center gap-3 w-full bg-gray-800 hover:bg-gray-700 text-white px-4 py-3 rounded-xl transition-colors border border-gray-700">
+                <i data-lucide="plus" class="w-5 h-5"></i>
+                <span class="font-medium text-sm">Obrolan Baru</span>
+            </button>
         </div>
-        
-        <div class="quick-actions">
-            <button class="quick-action" onclick="sendQuickMessage('Apa kabar?')">Apa kabar?</button>
-            <button class="quick-action" onclick="sendQuickMessage('Jelaskan tentang AI')">Tentang AI</button>
-            <button class="quick-action" onclick="sendQuickMessage('Bantu saya coding')">Bantu Coding</button>
+
+        <!-- Chat History -->
+        <div class="flex-1 overflow-y-auto px-3 py-2 space-y-1">
+            <p class="text-xs font-semibold text-gray-500 px-3 mb-2 mt-4 uppercase tracking-wider">Hari Ini</p>
+            <button class="flex items-center gap-3 w-full hover:bg-gray-800 px-3 py-2.5 rounded-lg transition-colors text-left group active-chat bg-gray-800">
+                <i data-lucide="message-square" class="w-4 h-4 text-gray-400"></i>
+                <span class="text-sm truncate flex-1 text-gray-200">Mockup UI Chatbot AI</span>
+            </button>
+            <button class="flex items-center gap-3 w-full hover:bg-gray-800 px-3 py-2.5 rounded-lg transition-colors text-left group">
+                <i data-lucide="message-square" class="w-4 h-4 text-gray-400"></i>
+                <span class="text-sm truncate flex-1">Resep Nasi Goreng Spesial</span>
+            </button>
+
+            <p class="text-xs font-semibold text-gray-500 px-3 mb-2 mt-6 uppercase tracking-wider">7 Hari Sebelumnya</p>
+            <button class="flex items-center gap-3 w-full hover:bg-gray-800 px-3 py-2.5 rounded-lg transition-colors text-left group">
+                <i data-lucide="message-square" class="w-4 h-4 text-gray-400"></i>
+                <span class="text-sm truncate flex-1">Cara belajar Python untuk pemula</span>
+            </button>
+            <button class="flex items-center gap-3 w-full hover:bg-gray-800 px-3 py-2.5 rounded-lg transition-colors text-left group">
+                <i data-lucide="message-square" class="w-4 h-4 text-gray-400"></i>
+                <span class="text-sm truncate flex-1">Ide nama startup teknologi</span>
+            </button>
         </div>
-        
-        <div class="chat-messages" id="chatMessages">
-            <div class="message bot">
-                Halo! 👋 Saya LUMA. Ada yang bisa saya bantu hari ini? Silakan tanyakan apa saja!
-            </div>
+
+        <!-- User Profile -->
+        <div class="p-4 border-t border-gray-800">
+            <button class="flex items-center gap-3 w-full hover:bg-gray-800 px-3 py-2 rounded-lg transition-colors">
+                <div class="w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center text-white font-semibold">
+                    U
+                </div>
+                <div class="text-left flex-1">
+                    <p class="text-sm font-medium text-white">User Pengguna</p>
+                    <p class="text-xs text-gray-400">Pro Plan</p>
+                </div>
+                <i data-lucide="more-horizontal" class="w-5 h-5 text-gray-400"></i>
+            </button>
         </div>
-        
-        <div class="chat-input-container">
-            <div class="chat-input-wrapper">
-                <textarea 
-                    class="chat-input" 
-                    id="chatInput" 
-                    placeholder="Ketik pesan Anda..."
-                    rows="1"
-                    onkeydown="handleKeyDown(event)"
-                    oninput="autoResize(this)"
-                ></textarea>
-                <button class="send-button" onclick="sendMessage()">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
-                    </svg>
+    </aside>
+
+    <!-- Main Chat Area -->
+    <main class="flex-1 flex flex-col h-full relative min-w-0 bg-white">
+        <!-- Header -->
+        <header class="h-14 flex items-center justify-between px-4 border-b border-gray-100 bg-white/80 backdrop-blur-sm sticky top-0 z-10">
+            <div class="flex items-center gap-3">
+                <button onclick="toggleSidebar()" class="md:hidden p-2 hover:bg-gray-100 rounded-lg text-gray-600 transition-colors">
+                    <i data-lucide="menu" class="w-5 h-5"></i>
                 </button>
+                <div class="flex items-center gap-2 cursor-pointer hover:bg-gray-100 px-3 py-1.5 rounded-lg transition-colors">
+                    <span class="font-semibold text-gray-700">LUMA</span>
+                    <i data-lucide="chevron-down" class="w-4 h-4 text-gray-400"></i>
+                </div>
+            </div>
+            <button class="p-2 hover:bg-gray-100 rounded-lg text-gray-600 transition-colors tooltip" title="Bagikan">
+                <i data-lucide="share" class="w-5 h-5"></i>
+            </button>
+        </header>
+
+        <!-- Chat Feed -->
+        <div id="chat-container" class="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 scroll-smooth">
+            <div id="chat-messages" class="max-w-3xl mx-auto space-y-6 pb-20">
+                
+                <!-- Welcome State -->
+                <div id="welcome-screen" class="flex flex-col items-center justify-center h-[60vh] text-center animate-fade-in">
+                    <div class="w-16 h-16 bg-gradient-to-tr from-indigo-500 to-purple-500 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-indigo-200">
+                        <i data-lucide="sparkles" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <h1 class="text-3xl font-bold text-gray-800 mb-2">Halo! Saya LUMA 👋</h1>
+                    <p class="text-gray-500 mb-8 max-w-md">Asisten AI powered by OpenHands. Tanyakan apa saja, saya siap membantu! 🚀</p>
+                    
+                    <!-- Suggestions -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 w-full max-w-2xl">
+                        <button onclick="useSuggestion('Apa itu OpenHands?')" class="text-left p-4 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors group">
+                            <i data-lucide="sparkles" class="w-5 h-5 text-indigo-500 mb-2 group-hover:scale-110 transition-transform"></i>
+                            <p class="text-sm font-medium text-gray-700">Apa itu OpenHands?</p>
+                            <p class="text-xs text-gray-400 mt-1">AI coding agent platform</p>
+                        </button>
+                        <button onclick="useSuggestion('Buatkan code Python untuk scrape website')" class="text-left p-4 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors group">
+                            <i data-lucide="code-2" class="w-5 h-5 text-green-500 mb-2 group-hover:scale-110 transition-transform"></i>
+                            <p class="text-sm font-medium text-gray-700">Buatkan script Python</p>
+                            <p class="text-xs text-gray-400 mt-1">untuk scrape website</p>
+                        </button>
+                        <button onclick="useSuggestion('Jelaskan cara fix bug dengan OpenHands')" class="text-left p-4 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors group">
+                            <i data-lucide="bug" class="w-5 h-5 text-amber-500 mb-2 group-hover:scale-110 transition-transform"></i>
+                            <p class="text-sm font-medium text-gray-700">Fix bug dengan OpenHands</p>
+                            <p class="text-xs text-gray-400 mt-1">87% bugs fixed same-day</p>
+                        </button>
+                        <button onclick="useSuggestion('Tutorial OpenHands SDK untuk pemula')" class="text-left p-4 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors group">
+                            <i data-lucide="book-open" class="w-5 h-5 text-orange-500 mb-2 group-hover:scale-110 transition-transform"></i>
+                            <p class="text-sm font-medium text-gray-700">Tutorial OpenHands SDK</p>
+                            <p class="text-xs text-gray-400 mt-1">untuk pemula</p>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Messages will be appended here -->
             </div>
         </div>
-    </div>
+
+        <!-- Input Area -->
+        <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-white via-white to-transparent pt-6 pb-4 px-4 md:px-8">
+            <div class="max-w-3xl mx-auto relative">
+                <form id="chat-form" class="relative flex items-end gap-2 bg-white border border-gray-300 rounded-2xl shadow-sm focus-within:ring-2 focus-within:ring-indigo-500 focus-within:border-indigo-500 transition-shadow overflow-hidden p-2">
+                    
+                    <button type="button" class="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors flex-shrink-0" title="Lampirkan file">
+                        <i data-lucide="paperclip" class="w-5 h-5"></i>
+                    </button>
+
+                    <textarea id="chat-input" rows="1" placeholder="Kirim pesan ke LUMA..." class="w-full max-h-32 py-2.5 px-2 bg-transparent border-none focus:ring-0 resize-none text-gray-700 text-[15px] leading-relaxed" oninput="autoResize(this)"></textarea>
+
+                    <button type="submit" id="send-btn" class="p-2 bg-gray-100 text-gray-400 rounded-full transition-colors flex-shrink-0 mb-0.5 pointer-events-none" disabled>
+                        <i data-lucide="arrow-up" class="w-5 h-5"></i>
+                    </button>
+                </form>
+                <div class="text-center mt-2 text-xs text-gray-400">
+                    AI dapat membuat kesalahan. Harap periksa kembali informasi penting.
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Templates for Messages -->
+    <template id="user-message-template">
+        <div class="flex justify-end w-full animate-fade-in mb-6">
+            <div class="bg-indigo-50 flex-none px-5 py-3.5 rounded-2xl rounded-tr-sm max-w-[85%] text-[15px] leading-relaxed text-gray-800">
+                <span class="message-content whitespace-pre-wrap"></span>
+            </div>
+        </div>
+    </template>
+
+    <template id="ai-message-template">
+        <div class="flex gap-4 w-full animate-fade-in mb-6">
+            <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center flex-shrink-0 shadow-sm mt-1">
+                <i data-lucide="sparkles" class="w-4 h-4 text-white"></i>
+            </div>
+            <div class="flex-1 max-w-[85%] text-[15px] leading-relaxed text-gray-800 message-content prose prose-indigo">
+                <!-- Content goes here -->
+            </div>
+        </div>
+    </template>
+
+    <template id="typing-indicator-template">
+        <div id="typing-indicator" class="flex gap-4 w-full mb-6">
+            <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center flex-shrink-0 mt-1">
+                <i data-lucide="sparkles" class="w-4 h-4 text-white"></i>
+            </div>
+            <div class="flex items-center gap-1.5 py-3">
+                <div class="w-2 h-2 bg-gray-400 rounded-full typing-dot"></div>
+                <div class="w-2 h-2 bg-gray-400 rounded-full typing-dot"></div>
+                <div class="w-2 h-2 bg-gray-400 rounded-full typing-dot"></div>
+            </div>
+        </div>
+    </template>
 
     <script>
-        const chatMessages = document.getElementById('chatMessages');
-        const chatInput = document.getElementById('chatInput');
-        
-        // Intelligent response system
-        const knowledgeBase = {
-            greeting: {
-                patterns: ['halo', 'hai', 'hi', 'assalam', 'pagi', 'siang', 'sore', 'malam', 'selamat', 'kabar', 'apa kabar'],
-                responses: [
-                    "Halo! 👋 Selamat datang! Senang bisa berbicara dengan Anda. Saya adalah asisten AI yang siap membantu Anda. Bisa ceritakan, ada yang sedang Anda pikirkan atau butuhkan hari ini?",
-                    "Hai! 😊 Selamat datang! Saya di sini untuk membantu Anda sebaik mungkin. Silakan tanyakan apa saja - mulai dari informasi umum, bantuan teknis, atau sekadar mengobrol.",
-                    "Assalamualaikum! 🙏 Saya LUMA, senang bertemu dengan Anda. Ada yang bisa saya bantu hari ini? Saya siap memberikan informasi yang Anda butuhkan."
-                ]
-            },
-            help: {
-                patterns: ['bantu', 'tolong', 'help', 'how', 'cara', 'tips', 'saran', 'rekomendasi'],
-                responses: [
-                    "Tentu, saya dengan senang hati membantu! 😊 Untuk memberikan jawaban yang lebih tepat, boleh ceritakan lebih detail tentang apa yang Anda butuhkan? Misalnya:\n\n• Jika butuh informasi: Tentang topik apa?\n• Jika butuh bantuan teknis: Apa yang sedang Anda kerjakan?\n• Jika butuh saran: Dalam situasi seperti apa?\n\nDengan informasi lebih lanjut, saya bisa memberikan jawaban yang lebih spesifik dan berguna untuk Anda.",
-                    "Saya siap membantu! 💪 Mohon berikan detail lebih lanjut agar saya bisa memberikan solusi terbaik untuk Anda. Semakin spesifik pertanyaan Anda, semakin tepat jawaban yang bisa saya berikan.",
-                    "Dengan senang hati! 🙌 Agar saya bisa membantu secara optimal, coba jelaskan:\n\n1. Apa tujuan utama Anda?\n2. Apakah ada kendala yang sedang dihadapi?\n3. Sudah mencoba solusi apa saja?\n\nDengan pemahaman yang lebih baik, saya akan memberikan jawaban yang lebih detail dan actionable."
-                ]
-            },
-            programming: {
-                patterns: ['code', 'coding', 'program', 'python', 'javascript', 'html', 'css', 'java', 'php', 'react', 'vue', 'angular', 'node', 'api', 'database', 'sql', 'git', 'github', 'deploy', 'server', 'website', 'web', 'app', 'mobile', 'bantu coding', 'bantu saya coding'],
-                responses: [
-                    "Mengenai programming dan development! 💻 Saya bisa membantu Anda dengan berbagai aspek:\n\n📌 **Bahasa Pemrograman**: Python, JavaScript, Java, PHP, C++, dan lainnya\n📌 **Framework**: React, Vue, Angular, Django, Flask, Next.js\n📌 **Database**: MySQL, PostgreSQL, MongoDB, Firebase\n📌 **Tools**: Git, GitHub, Docker, VS Code\n📌 **Deployment**: Vercel, Netlify, AWS, Heroku\n\nBisa ceritakan lebih spesifik project atau masalah yang sedang Anda hadapi? Saya akan dengan senang hati membantu menemukan solusinya!",
-                    "Topik programming yang menarik! 🚀 Berdasarkan pengalaman dan pengetahuan saya, saya bisa membantu Anda dengan:\n\n✅ **Debugging**: Mencari dan memperbaiki error dalam kode Anda\n✅ **Architecture**: Merancang struktur project yang baik\n✅ **Best Practices**: Menulis kode yang bersih dan efisien\n✅ **Optimization**: Meningkatkan performa aplikasi\n✅ **Documentation**: Membuat dokumentasi yang baik\n\nSilakan bagikan kode atau jelaskan masalah spesifik Anda, saya akan memberikan analisis dan solusi yang detail.",
-                    "Development adalah bidang yang sangat luas! 📚 Berikut beberapa area di mana saya bisa membantu:\n\n🔹 **Frontend**: HTML, CSS, JavaScript, responsive design\n🔹 **Backend**: API development, authentication, payment integration\n🔹 **Mobile**: React Native, Flutter, PWA\n🔹 **DevOps**: CI/CD, containerization, cloud deployment\n🔹 **Testing**: Unit testing, integration testing\n\nApa aspek tertentu yang ingin Anda eksplorasi atau ada masalah spesifik yang perlu dipecahkan?"
-                ]
-            },
-            ai: {
-                patterns: ['ai', 'chatbot', 'machine learning', 'deep learning', 'neural', 'gpt', 'openai', 'claude', 'anthropic', 'llm', 'prompt', 'nlp', 'chat gpt', 'tentang ai', 'jelaskan tentang ai'],
-                responses: [
-                    "AI (Artificial Intelligence) adalah topik yang sangat menarik! 🤖 Saat ini, saya adalah contoh dari AI berbasis LLM (Large Language Model). Berikut pemahaman saya:\n\n📊 **Jenis-jenis AI**:\n• **Narrow AI**: AI yang fokus pada satu tugas spesifik\n• **General AI**: AI dengan kemampuan mirip manusia (belum ada)\n• **LLM (Large Language Model)**: Model bahasa besar seperti saya\n\n🔧 **Aplikasi AI populer**:\n• ChatGPT (OpenAI) - Generatif teks\n• Claude (Anthropic) - Analisis & percakapan\n• DALL-E / Midjourney - Generate gambar\n• Whisper - Speech recognition\n\n💡 **Tips menggunakan AI**:\n• Berikan konteks yang jelas\n• Pisahkan pertanyaan kompleks menjadi bagian kecil\n• Iterasi dan refine prompt Anda\n\nAda aspek AI tertentu yang ingin Anda eksplorasi lebih dalam?",
-                    "Teknologi AI terus berkembang pesat! 🚀 Beberapa hal penting yang perlu diketahui:\n\n📈 **Tren AI saat ini**:\n• Generative AI (membuat konten baru)\n• Multimodal AI (teks, gambar, suara)\n• AI Agents (自治AI yang bisa melakukan tugas autonomously)\n\n⚠️ **Pertimbangan etis**:\n• Bias dalam data training\n• Privasi dan keamanan data\n• Transparansi penggunaan AI\n• Dampak terhadap pekerjaan\n\n💼 **Penerapan AI di industri**:\n• Healthcare: Diagnosis, drug discovery\n• Finance: Fraud detection, trading\n• Education: Personalized learning\n• Customer Service: Chatbots, support automation\n\nTopik mana yang ingin Anda bahas lebih detail? Saya bisa memberikan penjelasan yang lebih mendalam sesuai kebutuhan Anda."
-                ]
-            },
-            explanation: {
-                patterns: ['apa itu', 'apa perbedaan', 'jelaskan', 'define', 'explain', 'pengertian', 'definisi', 'meaning', 'apa itu'],
-                responses: [
-                    "Pertanyaan yang bagus! 📚 Saya akan menjelaskan secara detail:\n\n[Karena saya adalah AI language model, saya bisa menjelaskan berbagai konsep, teori, teknologi, atau topik yang Anda minati.]\n\nSilakan sebutkan topik spesifik yang ingin Anda pahami lebih dalam. Saya akan memberikan:\n\n📖 Penjelasan konseptual\n📊 Contoh nyata/penggunaan\n⚡ Kelebihan dan kekurangan\n🔄 Perbandingan dengan alternatif\n📝 Sumber referensi untuk belajar lebih lanjut\n\nKlik topik di bawah atau ketik pertanyaan Anda secara spesifik!",
-                    "Baik, izinkan saya menjelaskan dengan detail! 🎯\n\nUntuk memberikan penjelasan yang komprehensif, saya membutuhkan informasi lebih lanjut:\n\n• Topik spesifik apa yang ingin Anda pahami?\n• Tingkat pemahaman Anda saat ini (pemula/menengah/mahir)?\n• Apakah Anda butuh contoh praktis atau teori murni?\n\nDengan informasi ini, saya bisa menyesuaikan penjelasan agar paling bermanfaat untuk Anda."
-                ]
-            },
-            problem: {
-                patterns: ['error', 'bug', 'gagal', 'masalah', 'issue', 'trouble', 'kesulitan', 'error', 'not working', 'tidak bisa', 'kenapa', 'why', 'how come'],
-                responses: [
-                    "Saya turut prihatin dengan masalah yang sedang Anda hadapi. 😟 Demi membantu lebih efektif, coba berikan detail berikut:\n\n🔍 **Informasi yang dibutuhkan:**\n1. Apa pesan error yang muncul?\n2. Kapan masalah ini pertama kali terjadi?\n3. Apa perubahan terakhir yang Anda lakukan?\n4. Sudah mencoba langkah apa saja?\n\n💡 **Langkah awal yang umum:**\n• Clear cache browser / restart IDE\n• Check console/log untuk detail error\n• Verify semua dependencies sudah terinstall\n• Pastikan konfigurasi sudah benar\n\nDengan informasi spesifik, saya bisa membantu menemukan solusi yang tepat!",
-                    "Masalah teknis memang bisa frustasi! 🔧 Saya akan bantu Anda menyelesaikan ini. Agar lebih efektif, coba identifikasi:\n\n📋 **Checklist troubleshooting:**\n□ Apa pesan error yang spesifik?\n□ Di mana error terjadi (browser, terminal, API)?\n□ Apakah ini第一次 terjadi atau sudah berulang?\n□ Apa steps untuk mereproduksi masalah?\n\n🔄 **Solusi umum yang bisa dicoba:**\n• Restart aplikasi/mesin\n• Clear dan rebuild dependencies\n• Check koneksi internet/API\n• Review recent changes di kode\n\nCeritakan detail masalah Anda, saya akan bantu breakdown dan cari solusinya!",
-                    "Setiap masalah pasti ada solusinya! 💪 Mari kita selesaikan bersama. Untuk mempercepat proses debugging, pertimbangkan:\n\n1️⃣ **Reproduce the issue**: Bisa Anda jelaskan steps untuk membuat masalah muncul kembali?\n\n2️⃣ **Check error details**: Apa exact error message yang muncul? Bisa salin di sini.\n\n3️⃣ **Environment info**: OS apa? Versi software yang digunakan?\n\n4️⃣ **Recent changes**: Apa yang berubah sebelum masalah muncul?\n\nSaya akan memberikan panduan step-by-step untuk menyelesaikan masalah Anda. Semakin detail informasinya, semakin akurat solusi yang bisa saya tawarkan!"
-                ]
-            },
-            opinion: {
-                patterns: ['menurutmu', 'opini', 'opinion', 'think', 'what do you think', 'better', 'lebih baik', 'sebaiknya', 'should', 'must'],
-                responses: [
-                    "Berdasarkan analisis saya, berikut pendapat saya: 💭\n\n[Sebagai AI, saya memberikan rekomendasi berdasarkan data, best practices, dan konsensus komunitas developer.]\n\nUntuk memberikan opini yang lebih akurat, saya perlu tahu:\n\n• Konteks penggunaan Anda (personal/project/startup/enterprise)?\n• Prioritas utama (kecepatan development/performa/skalabilitas/harga)?\n• Tim dan sumber daya yang tersedia?\n\nDengan konteks ini, saya bisa memberikan rekomendasi yang lebih sesuai dengan kebutuhan spesifik Anda.",
-                    "Pertanyaan bagus tentang opinion! ⚖️ Saya akan berbagi perspektif:\n\n📊 **Faktor yang perlu dipertimbangkan:**\n• Use case spesifik Anda\n• Budget dan timeline\n• Skillset tim\n• Requirements jangka panjang\n\n💡 **Rekomendasi umum**:\n• Untuk prototyping cepat: Gunakan tools yang familiar\n• Untuk production: Prioritaskan scalability dan maintainability\n• Untuk learning: Fokus pada fundamental concepts\n\nNamun setiap situasi unik! Ceritakan lebih detail kondisi Anda agar saya bisa memberikan saran yang lebih personal dan actionable."
-                ]
-            },
-            gratitude: {
-                patterns: ['terima kasih', 'thanks', 'thank you', 'makasih', 'good job', 'bagus', 'nice', 'mantap', 'keren', 'good'],
-                responses: [
-                    "Sama-sama! 😊 Senang bisa membantu Anda. Jika nanti ada pertanyaan lain atau butuh bantuan lagi, jangan ragu untuk kembali. Saya selalu siap membantu! 👋",
-                    "Terima kasih kembali! 🙏 Senang sekali jika saya bisa bermanfaat. Jangan lupa follow project ini di GitHub dan bantu share ke teman-teman yang mungkin membutuhkan! ⭐",
-                    "Pleasure helping you! 🌟 Jika Anda mendapatkan value dari tools ini, hal terpenting adalah terus belajar dan eksplorasi. Teknologi berkembang cepat, stay updated! 🚀"
-                ]
-            },
-            goodbye: {
-                patterns: ['bye', 'dadah', 'sampai jumpa', 'goodbye', 'see you', 'nanti ketemu', 'selamat tinggal'],
-                responses: [
-                    "Sampai jumpa lagi! 👋 Semoga hari Anda menyenangkan. Jangan ragu untuk kembali kapan saja jika butuh bantuan. Saya selalu siap sapa Anda! 😊",
-                    "Goodbye! 👋 Terima kasih sudah mengobrol dengan saya. Semoga berhasil dengan project Anda! Come back anytime! 🚀",
-                    "Sampai ketemu lagi! 🙏 Semoga bermanfaat apa yang sudah kita diskusikan. Jumpa di lain waktu! 💪"
-                ]
-            },
-            unclear: {
-                patterns: ['...', '?'],
-                responses: [
-                    "Hmm, saya ingin membantu tapi butuh sedikit clarification. 🙏 Bisa jelaskan lebih detail apa yang sedang Anda pikirkan atau butuhkan? Berikut beberapa suggestion:\n\n💬 'Apa itu [topik tertentu]?'\n🔧 'Saya butuh bantuan dengan [masalah spesifik]'\n💡 'Tips untuk [konteks tertentu]'\n🤔 'Bandingkan [A] dan [B]'\n\nAtau bisa klik salah satu quick action di bawah untuk mulai!",
-                    "Saya ingin memastikan bisa membantu Anda dengan tepat. 🤔 Bisa elaborasi sedikit? Misalnya:\n\n• Topik apa yang sedang Anda pikirkan?\n• Ada konteks tertentu yang perlu saya ketahui?\n• Apakah Anda sedang menyelesaikan tugas spesifik?\n\nDengan informasi tambahan, saya bisa memberikan jawaban yang lebih useful dan relevant untuk Anda! 💡"
-                ]
-            },
-            default: {
-                patterns: [],
-                responses: [
-                    "Terima kasih sudah berbagi! 🙏 Itu topik yang menarik. Berdasarkan apa yang Anda sampaikan, saya ingin membantu lebih detail. Bisa elaborasi sedikit?\n\nBeberapa hal yang mungkin membantu:\n• Konteks atau background situation\n• Spesifik apa yang ingin dicapai\n• Apakah ada constraints atau limitations\n\nAtau, apakah Anda ingin saya jelaskan topik tertentu, bantu dengan coding, atau memberikan rekomendasi? Saya siap dalam berbagai format! 💪",
-                    "Saya menangkap pesan Anda! 🤖 Sebagai AI, saya senang mendiskusikan berbagai topik. Agar conversation kita lebih produktif, boleh saya tahu:\n\n🔹 Apa tujuan utama Anda dalam diskusi ini?\n🔹 Apakah Anda butuh informasi, bantuan teknis, atau pendapat?\n🔹 Sudah familiar dengan topiknya atau ini sesuatu yang baru?\n\nDengan pemahaman ini, saya bisa memberikan response yang lebih targeted dan valuable untuk Anda! ✨",
-                    "Menarik! Saya appreciate Anda berbagi ini. 💭 Berdasarkan apa yang Anda sampaikan, berikut beberapa thoughts:\n\n📌 Yang penting untuk dipertimbangkan:\n• Pastikan Anda memahami fundamental concepts\n• Praktik langsung adalah cara terbaik untuk belajar\n• Jangan hesitate untuk bertanya jika ada yang unclear\n\nApakah ada aspek spesifik dari topik ini yang ingin Anda explore lebih dalam? Saya bisa memberikan explanation yang lebih detailed sesuai kebutuhan Anda! 🎯",
-                    "Saya understand bahwa ini penting untuk Anda. 👍 Mari kita explore lebih dalam. Saya bisa membantu dalam berbagai cara:\n\n📚 **Educational**: Menjelaskan konsep, teori, atau terminologi\n🛠️ **Practical**: Step-by-step guides, tutorials, best practices\n💡 **Analytical**: Membantu Anda think through masalah, pro-cons analysis\n🔧 **Technical**: Coding help, debugging, solution architecture\n\nApa approach yang paling helpful untuk Anda saat ini? Atau mau saya decide based on context? Saya flexible! 😊"
-                ]
-            },
-            litellm: {
-                patterns: ['litellm', 'lite llm', 'litellm proxy', 'unified api'],
-                responses: [
-                    "LiteLLM adalah library Python yang powerful! 🔥 Ini memungkinkan Anda mengakses 100+ LLM dengan format API yang konsisten.\n\n🚀 **Supported Providers**:\n• OpenAI (GPT-4, GPT-3.5)\n• Anthropic (Claude 3)\n• Azure OpenAI\n• Google Vertex AI (Gemini)\n• AWS Bedrock\n• **MiniMax** 🇨🇳\n• Cohere, Hugging Face\n• And 100+ more!\n\n💡 **Keunggulan LiteLLM**:\n⟨code⟩python\nfrom litellm import completion\n\n# OpenAI\nresponse = completion(model='gpt-4', messages=[...])\n\n# Claude\nresponse = completion(model='claude-3-opus', messages=[...])\n\n# MiniMax\nresponse = completion(model='minimax-01', messages=[...])\n⟨code⟩\n\n📦 **Install**: pip install litellm\n\nAda yang ingin Anda ketahui lebih lanjut tentang LiteLLM?"
-                ]
-            },
-            minimax: {
-                patterns: ['minimax', 'minimax-01', 'minimax-m2', 'minimax-m2.7', 'abab'],
-                responses: [
-                    "MiniMax adalah perusahaan AI dari China! 🇨🇳\n\n🤖 **Model MiniMax**:\n• **MiniMax-01** - 456B parameters, MoE architecture\n• **Abab 6.5** - Model sebelumnya\n• **MiniMax Speech** - Text-to-Speech\n• **MiniMax Video** - AI video generation\n\n📊 **Spesifikasi MiniMax-01**:\n• 456 billion parameters\n• Mixture of Experts (MoE)\n• Supports 1M+ token context\n• Multi-modal capabilities\n• Cost-effective untuk enterprise\n\n🔗 **Integrasi via LiteLLM**:\n⟨code⟩python\nimport litellm\nresponse = litellm.completion(\n    model='minimax-01',\n    messages=[{'role': 'user', 'content': 'Hello!'}]\n)\n⟨code⟩\n\nMau tahu lebih lanjut?"
-                ]
-            },
-            cloud: {
-                patterns: ['cloud', 'aws', 'gcp', 'azure', 'google cloud', 'ec2', 's3', 'lambda', 'serverless', 'docker', 'kubernetes'],
-                responses: [
-                    "Cloud Computing adalah fondasi modern! ☁️\n\n🏢 **Major Providers**:\n• **AWS** - EC2, S3, Lambda, ECS, EKS\n• **Google Cloud** - Compute Engine, Cloud Run\n• **Azure** - VMs, Functions, AKS\n\n🔧 **Services Overview**:\n📊 **Compute**: VMs, Containers, Serverless\n💾 **Storage**: Object, Block, File storage\n🗄️ **Databases**: SQL, NoSQL, In-memory\n🌐 **Networking**: VPC, CDN, Load Balancers\n\n💡 **Best Practices**:\n• Use infrastructure as code (Terraform)\n• Implement auto-scaling\n• Enable monitoring & logging\n• Follow security best practices\n\nPertanyaan spesifik tentang cloud?"
-                ]
-            },
-            devops: {
-                patterns: ['devops', 'ci/cd', 'jenkins', 'github actions', 'gitlab ci', 'deployment', 'automation', 'terraform'],
-                responses: [
-                    "DevOps adalah kunci deployment efisien! 🔄\n\n🛠️ **Tools Stack**:\n• **CI/CD**: GitHub Actions, GitLab CI, Jenkins\n• **Container**: Docker, Podman\n• **Orchestration**: Kubernetes, Swarm\n• **IaC**: Terraform, Pulumi, Ansible\n• **Monitoring**: Prometheus, Grafana, ELK\n\n📋 **GitHub Actions Example**:\n⟨code⟩yaml\nname: Deploy\non: [push]\njobs:\n  build:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - name: Build\n        run: docker build -t myapp .\n      - name: Deploy\n        run: kubectl apply -f deployment.yaml\n⟨code⟩\n\n✅ **Benefits**: Faster delivery, improved reliability, automated testing\n\nAda pertanyaan DevOps?"
-                ]
-            },
-            datascience: {
-                patterns: ['data science', 'data analysis', 'pandas', 'numpy', 'jupyter', 'visualization', 'tensorflow', 'pytorch'],
-                responses: [
-                    "Data Science adalah kombinasi seni dan sains! 📊🔬\n\n📚 **Fundamental Skills**:\n• **Statistics**: Descriptive, inferential\n• **Programming**: Python, R, SQL\n• **Data Manipulation**: Pandas, NumPy\n• **Visualization**: Matplotlib, Plotly, Tableau\n• **ML**: Scikit-learn, TensorFlow, PyTorch\n\n📈 **Workflow**:\n1️⃣ Data Collection - SQL, APIs\n2️⃣ Data Cleaning - Handle missing values\n3️⃣ Exploratory Analysis\n4️⃣ Modeling\n5️⃣ Evaluation\n6️⃣ Deployment\n\n🐍 **Pandas Example**:\n⟨code⟩python\nimport pandas as pd\ndf = pd.read_csv('data.csv')\ndf.describe()\ndf.groupby('category').mean()\n⟨code⟩\n\nTopik Data Science apa yang ingin dibahas?"
-                ]
-            },
-            cybersecurity: {
-                patterns: ['security', 'hack', 'cybersecurity', 'ssl', 'tls', 'encryption', 'oauth', 'jwt', 'firewall'],
-                responses: [
-                    "Cybersecurity sangat penting! 🔐\n\n🛡️ **Core Concepts**:\n• **CIA Triad**: Confidentiality, Integrity, Availability\n• **Authentication**: Passwords, 2FA, MFA\n• **Authorization**: RBAC, ABAC\n• **Encryption**: AES, RSA, hashing\n\n🔧 **OWASP Top 10**:\n• Injection\n• Broken Authentication\n• Sensitive Data Exposure\n• XSS, SQL Injection, CSRF\n\n🔐 **Best Practices**:\n⟨code⟩javascript\n// JWT securely\nconst token = jwt.sign(payload, secret, {\n  expiresIn: '1h',\n  algorithm: 'HS256'\n});\n⟨code⟩\n\n📋 **Tools**: Nessus, Metasploit, Wireshark, Burp Suite\n\nPertanyaan keamanan?"
-                ]
-            }
-        };
-        
-        // Smart response function
-        function getSmartResponse(userMessage) {
-            const lowerMsg = userMessage.toLowerCase();
-            
-            // Collect all patterns with their category
-            const allPatterns = [];
-            for (const [category, data] of Object.entries(knowledgeBase)) {
-                if (category === 'default') continue;
-                for (const pattern of data.patterns) {
-                    allPatterns.push({ pattern, category, responses: data.responses });
-                }
-            }
-            
-            // Sort by pattern length (longest first) to match more specific patterns
-            allPatterns.sort((a, b) => b.pattern.length - a.pattern.length);
-            
-            // Find first matching pattern
-            for (const { pattern, responses } of allPatterns) {
-                if (lowerMsg.includes(pattern)) {
-                    return responses[Math.floor(Math.random() * responses.length)];
-                }
-            }
-            
-            // Default response
-            return knowledgeBase.default.responses[Math.floor(Math.random() * knowledgeBase.default.responses.length)];
+        // Initialize Icons
+        lucide.createIcons();
+
+        // DOM Elements
+        const chatForm = document.getElementById('chat-form');
+        const chatInput = document.getElementById('chat-input');
+        const sendBtn = document.getElementById('send-btn');
+        const chatMessages = document.getElementById('chat-messages');
+        const welcomeScreen = document.getElementById('welcome-screen');
+        const chatContainer = document.getElementById('chat-container');
+        const sidebar = document.getElementById('sidebar');
+        const mobileOverlay = document.getElementById('mobile-overlay');
+
+        // Toggle Sidebar on Mobile
+        function toggleSidebar() {
+            sidebar.classList.toggle('-translate-x-full');
+            mobileOverlay.classList.toggle('hidden');
         }
 
+        // Auto Resize Textarea
         function autoResize(textarea) {
             textarea.style.height = 'auto';
-            textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px';
-        }
-
-        function handleKeyDown(event) {
-            if (event.key === 'Enter' && !event.shiftKey) {
-                event.preventDefault();
-                sendMessage();
+            textarea.style.height = (textarea.scrollHeight < 128 ? textarea.scrollHeight : 128) + 'px';
+            
+            // Enable/Disable Send Button
+            if (textarea.value.trim().length > 0) {
+                sendBtn.classList.remove('bg-gray-100', 'text-gray-400', 'pointer-events-none');
+                sendBtn.classList.add('bg-indigo-600', 'text-white', 'hover:bg-indigo-700');
+                sendBtn.disabled = false;
+            } else {
+                sendBtn.classList.add('bg-gray-100', 'text-gray-400', 'pointer-events-none');
+                sendBtn.classList.remove('bg-indigo-600', 'text-white', 'hover:bg-indigo-700');
+                sendBtn.disabled = true;
             }
         }
 
-        function sendQuickMessage(message) {
-            chatInput.value = message;
-            sendMessage();
+        // Handle Enter key (Send without Shift)
+        chatInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                if (chatInput.value.trim().length > 0) {
+                    chatForm.dispatchEvent(new Event('submit'));
+                }
+            }
+        });
+
+        // Use Suggestion Buttons
+        function useSuggestion(text) {
+            chatInput.value = text;
+            autoResize(chatInput);
+            chatInput.focus();
         }
 
-        function addMessage(content, type) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${type}`;
-            // Convert newlines to <br> for proper display
-            messageDiv.innerHTML = content.replace(/\n/g, '<br>');
-            chatMessages.appendChild(messageDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+        // Start New Chat (Clear UI)
+        function startNewChat() {
+            // Remove all messages except welcome screen
+            const messages = chatMessages.querySelectorAll('.flex.w-full');
+            messages.forEach(msg => msg.remove());
+            
+            welcomeScreen.classList.remove('hidden');
+            if (window.innerWidth < 768) toggleSidebar(); // Close sidebar on mobile
         }
 
-        function showTyping() {
-            const typingDiv = document.createElement('div');
-            typingDiv.className = 'message bot typing';
-            typingDiv.id = 'typingIndicator';
-            typingDiv.innerHTML = `
-                <div class="typing-dot"></div>
-                <div class="typing-dot"></div>
-                <div class="typing-dot"></div>
-            `;
-            chatMessages.appendChild(typingDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+        // Scroll to bottom
+        function scrollToBottom() {
+            chatContainer.scrollTo({
+                top: chatContainer.scrollHeight,
+                behavior: 'smooth'
+            });
         }
 
-        function hideTyping() {
-            const typing = document.getElementById('typingIndicator');
-            if (typing) typing.remove();
-        }
-
-        function sendMessage() {
+        // Handle Form Submit
+        chatForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
             const message = chatInput.value.trim();
             if (!message) return;
 
-            // Add user message
-            addMessage(message, 'user');
+            // Hide welcome screen
+            if (welcomeScreen && !welcomeScreen.classList.contains('hidden')) {
+                welcomeScreen.classList.add('hidden');
+            }
+
+            // 1. Add User Message
+            const userTemplate = document.getElementById('user-message-template');
+            const userNode = userTemplate.content.cloneNode(true);
+            userNode.querySelector('.message-content').textContent = message;
+            chatMessages.appendChild(userNode);
+
+            // Reset Input
             chatInput.value = '';
             chatInput.style.height = 'auto';
+            autoResize(chatInput);
+            scrollToBottom();
 
-            // Show typing indicator
-            showTyping();
+            // 2. Add Typing Indicator
+            const typingTemplate = document.getElementById('typing-indicator-template');
+            const typingNode = typingTemplate.content.cloneNode(true);
+            chatMessages.appendChild(typingNode);
+            scrollToBottom();
 
-            // Get intelligent response
-            setTimeout(() => {
-                hideTyping();
-                const response = getSmartResponse(message);
-                addMessage(response, 'bot');
-            }, 1500 + Math.random() * 1500);
-        }
+            // 3. Call API to get AI Response
+            fetch('/api/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ message: message })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Remove typing indicator
+                const indicator = document.getElementById('typing-indicator');
+                if (indicator) indicator.remove();
 
-        // Focus input on load
-        chatInput.focus();
+                // Add AI Message
+                const aiTemplate = document.getElementById('ai-message-template');
+                const aiNode = aiTemplate.content.cloneNode(true);
+                
+                // Use response from API, convert newlines to <br>
+                const responseText = data.response || 'Maaf, terjadi kesalahan.';
+                aiNode.querySelector('.message-content').innerHTML = responseText.replace(/\n/g, '<br>');
+                chatMessages.appendChild(aiNode);
+                
+                // Re-initialize icons for any new dynamic content
+                lucide.createIcons();
+                scrollToBottom();
+            })
+            .catch(error => {
+                // Remove typing indicator
+                const indicator = document.getElementById('typing-indicator');
+                if (indicator) indicator.remove();
+
+                // Add Error Message
+                const aiTemplate = document.getElementById('ai-message-template');
+                const aiNode = aiTemplate.content.cloneNode(true);
+                aiNode.querySelector('.message-content').innerHTML = '❌ Maaf, terjadi kesalahan koneksi. Silakan coba lagi.';
+                chatMessages.appendChild(aiNode);
+                
+                lucide.createIcons();
+                scrollToBottom();
+            });
+        });
     </script>
 </body>
 </html>

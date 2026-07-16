@@ -1,5 +1,8 @@
 # 🤖 LUMA AI - Powered by OpenHands
 
+> **Created by Antono**
+
+
 AI Chatbot interaktif dengan **OpenHands Cloud API** untuk autonomous AI agent capabilities!
 
 ![Status](https://img.shields.io/badge/status-ready-brightgreen)
